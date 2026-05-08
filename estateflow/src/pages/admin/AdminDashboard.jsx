@@ -14,7 +14,8 @@ import { formatCurrency, formatNumber } from "../../utils/formatters";
 import StatsCard from "../../components/common/StatsCard";
 import ChartCard from "../../components/common/ChartCard";
 import { StatsCardSkeleton, ChartSkeleton } from "../../components/common/SkeletonLoader";
-import { revenueData, propertySalesData, leadsGrowthData, recentActivities } from "../../data/mockData";
+import RecentActivity from "../../components/dashboard/RecentActivity";
+import { revenueData, propertySalesData, leadsGrowthData } from "../../data/mockData";
 
 export default function AdminDashboard() {
   const { user } = useAuth();
@@ -137,25 +138,8 @@ export default function AdminDashboard() {
         </ChartCard>
       </div>
 
-      {/* Recent activity */}
-      <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700">
-        <div className="px-5 py-4 border-b border-slate-100 dark:border-slate-700">
-          <h3 className="text-base font-semibold text-slate-800 dark:text-white">Recent Activity</h3>
-        </div>
-        <ul className="divide-y divide-slate-100 dark:divide-slate-700">
-          {recentActivities.map((act) => (
-            <li key={act.id} className="px-5 py-3 flex items-center gap-3 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
-              <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-base shrink-0">
-                {act.type === "sale" ? "💰" : act.type === "lead" ? "👤" : act.type === "property" ? "🏠" : "🤝"}
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm text-slate-700 dark:text-slate-300 truncate">{act.message}</p>
-                <p className="text-xs text-slate-400 mt-0.5">{act.time}</p>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </div>
+      {/* Recent activity — real-time from Firestore */}
+      <RecentActivity limit={6} role="admin" />
     </div>
   );
 }
