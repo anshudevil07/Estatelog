@@ -1,0 +1,62 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper: check if user is logged in
+    function isLoggedIn() {
+      return request.auth != null;
+    }
+
+    // Helper: get the user's role from Firestore
+    function getRole() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
+    }
+
+    function isAdmin() {
+      return isLoggedIn() && getRole() == 'admin';
+    }
+
+    function isManager() {
+      return isLoggedIn() && getRole() == 'manager';
+    }
+
+    function isAdminOrManager() {
+      return isAdmin() || isManager();
+    }
+
+    // ── Users collection ──────────────────────────────────────────
+    match /users/{userId} {
+      // Anyone logged in can read users (needed for agent list in lead assignment)
+      allow read: if isLoggedIn();
+      // Only the user themselves or admin can write their profile
+      allow write: if isLoggedIn() && (request.auth.uid == userId || isAdmin());
+    }
+
+    // ── Properties collection ─────────────────────────────────────
+    match /properties/{propertyId} {
+      // Everyone logged in can read properties
+      allow read: if isLoggedIn();
+      // Only admin and manager can add/edit/delete
+      allow write: if isAdminOrManager();
+    }
+
+    // ── Leads collection ──────────────────────────────────────────
+    match /leads/{leadId} {
+      // Admin and manager see all leads
+      // Agents only see leads assigned to them
+      allow read: if isLoggedIn() && (
+        isAdminOrManager() ||
+        resource.data.assignedTo == get(/databases/$(database)/documents/users/$(request.auth.uid)).data.name
+      );
+      // Anyone logged in can create a lead
+      allow create: if isLoggedIn();
+      // Admin/manager can update any lead; agent can only update their own
+      allow update: if isLoggedIn() && (
+        isAdminOrManager() ||
+        resource.data.assignedTo == get(/databases/$(database)/documents/users/$(request.auth.uid)).data.name
+      );
+      // Only admin and manager can delete leads
+      allow delete: if isAdminOrManager();
+    }
+  }
+}
