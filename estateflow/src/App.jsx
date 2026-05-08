@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "./context/ThemeContext";
 import { AuthProvider } from "./context/AuthContext";
 import { ToastProvider } from "./context/ToastContext";
+import { NotificationProvider } from "./context/NotificationContext";
 import ProtectedRoute, { RoleRoute } from "./routes/ProtectedRoute";
 
 // Layouts
@@ -36,6 +37,7 @@ export default function App() {
       <ThemeProvider>
         <AuthProvider>
           <ToastProvider>
+            <NotificationProvider>
             <Routes>
               {/* ── Public routes ── */}
               <Route path="/login" element={<LoginPage />} />
@@ -107,6 +109,7 @@ export default function App() {
               {/* ── 404 ── */}
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
+            </NotificationProvider>
           </ToastProvider>
         </AuthProvider>
       </ThemeProvider>

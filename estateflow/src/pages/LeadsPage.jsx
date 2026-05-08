@@ -3,6 +3,7 @@ import { HiPlus, HiPencil, HiTrash, HiEye, HiMail, HiPhone } from "react-icons/h
 import { leadService, agentService } from "../services/api";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
+import { createNotification, NOTIF_TYPES } from "../firebase/notificationService";
 import { formatDate } from "../utils/formatters";
 import SearchBar from "../components/common/SearchBar";
 import StatusBadge from "../components/common/StatusBadge";
@@ -92,17 +93,34 @@ export default function LeadsPage() {
       if (isEdit) {
         await leadService.update(editLead.id, data);
         toast.success("Lead updated successfully");
+        // Notify everyone about the update
+        const type = data.status === "Closed" ? NOTIF_TYPES.LEAD_CLOSED : NOTIF_TYPES.LEAD_UPDATED;
+        const msg = data.status === "Closed"
+          ? `Lead "${data.name}" has been closed by ${user.name}`
+          : `Lead "${data.name}" was updated by ${user.name}`;
+        createNotification({ type, message: msg, triggeredBy: user.name });
       } else {
-        // Agents: auto-assign lead to themselves
-        const leadData = isAgent
-          ? { ...data, assignedTo: user.name }
-          : data;
+        const leadData = isAgent ? { ...data, assignedTo: user.name } : data;
         await leadService.create(leadData);
         toast.success("Lead added successfully");
+        // Notify about new lead
+        createNotification({
+          type: NOTIF_TYPES.LEAD_ADDED,
+          message: `New lead "${data.name}" added by ${user.name}`,
+          triggeredBy: user.name,
+        });
+        // If assigned to someone, send assignment notification too
+        if (leadData.assignedTo) {
+          createNotification({
+            type: NOTIF_TYPES.LEAD_ASSIGNED,
+            message: `Lead "${data.name}" assigned to ${leadData.assignedTo}`,
+            triggeredBy: user.name,
+            targetRole: "agent",
+          });
+        }
       }
       setAddModalOpen(false);
       setEditLead(null);
-      // Reload data after modal closes — errors here won't affect the success toast
       loadData();
     } catch (err) {
       console.error("Save lead error:", err);
@@ -116,6 +134,11 @@ export default function LeadsPage() {
     try {
       await leadService.delete(deleteTarget.id);
       toast.success(`Lead "${deleteTarget.name}" deleted`);
+      createNotification({
+        type: NOTIF_TYPES.LEAD_UPDATED,
+        message: `Lead "${deleteTarget.name}" was deleted by ${user.name}`,
+        triggeredBy: user.name,
+      });
       setDeleteTarget(null);
       loadData();
     } catch {

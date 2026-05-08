@@ -2,61 +2,37 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Helper: check if user is logged in
     function isLoggedIn() {
       return request.auth != null;
     }
 
-    // Helper: get the user's role from Firestore
-    function getRole() {
-      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
-    }
-
-    function isAdmin() {
-      return isLoggedIn() && getRole() == 'admin';
-    }
-
-    function isManager() {
-      return isLoggedIn() && getRole() == 'manager';
-    }
-
-    function isAdminOrManager() {
-      return isAdmin() || isManager();
-    }
-
-    // ── Users collection ──────────────────────────────────────────
+    // ── Users ─────────────────────────────────────────────────────
     match /users/{userId} {
-      // Anyone logged in can read users (needed for agent list in lead assignment)
       allow read: if isLoggedIn();
-      // Only the user themselves or admin can write their profile
-      allow write: if isLoggedIn() && (request.auth.uid == userId || isAdmin());
+      allow write: if isLoggedIn() && (
+        request.auth.uid == userId ||
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'
+      );
     }
 
-    // ── Properties collection ─────────────────────────────────────
+    // ── Properties ────────────────────────────────────────────────
     match /properties/{propertyId} {
-      // Everyone logged in can read properties
       allow read: if isLoggedIn();
-      // Only admin and manager can add/edit/delete
-      allow write: if isAdminOrManager();
+      allow write: if isLoggedIn();
     }
 
-    // ── Leads collection ──────────────────────────────────────────
+    // ── Leads ─────────────────────────────────────────────────────
     match /leads/{leadId} {
-      // Admin and manager see all leads
-      // Agents only see leads assigned to them
-      allow read: if isLoggedIn() && (
-        isAdminOrManager() ||
-        resource.data.assignedTo == get(/databases/$(database)/documents/users/$(request.auth.uid)).data.name
-      );
-      // Anyone logged in can create a lead
+      allow read, write: if isLoggedIn();
+    }
+
+    // ── Notifications — real-time, all logged-in users ────────────
+    match /notifications/{notifId} {
+      allow read: if isLoggedIn();
       allow create: if isLoggedIn();
-      // Admin/manager can update any lead; agent can only update their own
-      allow update: if isLoggedIn() && (
-        isAdminOrManager() ||
-        resource.data.assignedTo == get(/databases/$(database)/documents/users/$(request.auth.uid)).data.name
-      );
-      // Only admin and manager can delete leads
-      allow delete: if isAdminOrManager();
+      // Only the system (any logged-in user) can mark as read
+      allow update: if isLoggedIn() && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['read']);
+      allow delete: if false;
     }
   }
 }

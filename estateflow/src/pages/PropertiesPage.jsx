@@ -4,7 +4,9 @@ import {
   HiViewGrid, HiViewList, HiLocationMarker, HiHome,
 } from "react-icons/hi";
 import { propertyService } from "../services/api";
+import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
+import { createNotification, NOTIF_TYPES } from "../firebase/notificationService";
 import { formatFullCurrency, formatDate } from "../utils/formatters";
 import SearchBar from "../components/common/SearchBar";
 import StatusBadge from "../components/common/StatusBadge";
@@ -29,6 +31,7 @@ const sortOptions = [
 
 export default function PropertiesPage() {
   const toast = useToast();
+  const { user } = useAuth();
 
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -96,9 +99,19 @@ export default function PropertiesPage() {
       if (isEdit) {
         await propertyService.update(editProperty.id, data);
         toast.success("Property updated successfully");
+        const type = data.status === "Sold" ? NOTIF_TYPES.PROPERTY_SOLD : NOTIF_TYPES.PROPERTY_UPDATED;
+        const msg = data.status === "Sold"
+          ? `Property "${data.name}" has been marked as SOLD by ${user?.name}`
+          : `Property "${data.name}" was updated by ${user?.name}`;
+        createNotification({ type, message: msg, triggeredBy: user?.name });
       } else {
         await propertyService.create(data);
         toast.success("Property added successfully");
+        createNotification({
+          type: NOTIF_TYPES.PROPERTY_ADDED,
+          message: `New property "${data.name}" listed in ${data.location} by ${user?.name}`,
+          triggeredBy: user?.name,
+        });
       }
       await loadProperties();
       setAddModalOpen(false);
@@ -114,6 +127,11 @@ export default function PropertiesPage() {
     try {
       await propertyService.delete(deleteTarget.id);
       toast.success(`"${deleteTarget.name}" deleted`);
+      createNotification({
+        type: NOTIF_TYPES.PROPERTY_DELETED,
+        message: `Property "${deleteTarget.name}" was deleted by ${user?.name}`,
+        triggeredBy: user?.name,
+      });
       await loadProperties();
       setDeleteTarget(null);
     } catch {
