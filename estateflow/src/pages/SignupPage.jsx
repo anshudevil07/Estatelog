@@ -1,14 +1,35 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { HiMail, HiLockClosed, HiUser, HiEye, HiEyeOff } from "react-icons/hi";
+import { HiMail, HiLockClosed, HiUser, HiEye, HiEyeOff, HiArrowRight, HiCheckCircle } from "react-icons/hi";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
 import { validateEmail } from "../utils/validators";
-import Button from "../components/common/Button";
-import FormInput from "../components/common/FormInput";
 
-// Public signup — always creates an Agent account
-// Only Admin can create Manager/Admin accounts from inside the dashboard
+// Password strength checker
+function getPasswordStrength(password) {
+  if (!password) return { score: 0, label: "", color: "" };
+  let score = 0;
+  if (password.length >= 6) score++;
+  if (password.length >= 10) score++;
+  if (/[A-Z]/.test(password)) score++;
+  if (/[0-9]/.test(password)) score++;
+  if (/[^A-Za-z0-9]/.test(password)) score++;
+
+  if (score <= 1) return { score, label: "Weak", color: "bg-red-500" };
+  if (score <= 2) return { score, label: "Fair", color: "bg-amber-500" };
+  if (score <= 3) return { score, label: "Good", color: "bg-blue-500" };
+  return { score, label: "Strong", color: "bg-emerald-500" };
+}
+
+const features = [
+  { icon: "🏠", text: "Manage your assigned properties" },
+  { icon: "👥", text: "Track and follow up on leads" },
+  { icon: "📊", text: "View your personal performance" },
+  { icon: "📱", text: "Works on mobile & desktop" },
+  { icon: "🔔", text: "Real-time activity notifications" },
+  { icon: "🔒", text: "Secure Firebase authentication" },
+];
+
 export default function SignupPage() {
   const navigate = useNavigate();
   const { signup } = useAuth();
@@ -17,7 +38,18 @@ export default function SignupPage() {
   const [form, setForm] = useState({ name: "", email: "", password: "", confirm: "" });
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [focused, setFocused] = useState("");
+  const [mounted, setMounted] = useState(false);
+  const [step, setStep] = useState(1); // 2-step form
+
+  const strength = getPasswordStrength(form.password);
+
+  useEffect(() => {
+    const t = setTimeout(() => setMounted(true), 50);
+    return () => clearTimeout(t);
+  }, []);
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -25,11 +57,16 @@ export default function SignupPage() {
     if (errors[name]) setErrors((prev) => ({ ...prev, [name]: "" }));
   }
 
-  function validate() {
+  function validateStep1() {
     const errs = {};
     if (!form.name.trim()) errs.name = "Full name is required";
     if (!form.email) errs.email = "Email is required";
     else if (!validateEmail(form.email)) errs.email = "Enter a valid email";
+    return errs;
+  }
+
+  function validateStep2() {
+    const errs = {};
     if (!form.password) errs.password = "Password is required";
     else if (form.password.length < 6) errs.password = "Minimum 6 characters";
     if (!form.confirm) errs.confirm = "Please confirm your password";
@@ -37,20 +74,28 @@ export default function SignupPage() {
     return errs;
   }
 
+  function handleNext(e) {
+    e.preventDefault();
+    const errs = validateStep1();
+    if (Object.keys(errs).length > 0) { setErrors(errs); return; }
+    setErrors({});
+    setStep(2);
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
-    const errs = validate();
+    const errs = validateStep2();
     if (Object.keys(errs).length > 0) { setErrors(errs); return; }
 
     setLoading(true);
     try {
-      // Role is always "agent" on public signup — no exceptions
       await signup(form.name, form.email, form.password, "agent");
       toast.success("Account created! Welcome to EstateFlow.");
       navigate("/agent/dashboard");
     } catch (err) {
       if (err.code === "auth/email-already-in-use") {
         toast.error("This email is already registered.");
+        setStep(1);
       } else {
         toast.error("Signup failed. Please try again.");
       }
@@ -59,144 +104,352 @@ export default function SignupPage() {
     }
   }
 
+  // Shared input class builder
+  function inputClass(field) {
+    return `w-full pl-11 pr-4 py-3.5 rounded-xl text-sm bg-slate-900 border text-white placeholder:text-slate-600 focus:outline-none transition-all duration-200 ${
+      errors[field]
+        ? "border-red-500 focus:border-red-400 focus:ring-2 focus:ring-red-500/20"
+        : focused === field
+        ? "border-violet-500 ring-2 ring-violet-500/20"
+        : "border-slate-800 hover:border-slate-700"
+    }`;
+  }
+
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex">
-      {/* Left branding panel */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-indigo-700 via-violet-600 to-purple-700 flex-col justify-between p-12 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-10 right-20 w-72 h-72 rounded-full bg-white blur-3xl" />
-          <div className="absolute bottom-10 left-10 w-64 h-64 rounded-full bg-purple-300 blur-3xl" />
-        </div>
-        <div className="relative z-10">
-          <div className="flex items-center gap-3 mb-16">
-            <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur flex items-center justify-center">
-              <span className="text-white font-bold text-lg">E</span>
-            </div>
-            <span className="text-white font-bold text-2xl">EstateFlow</span>
-          </div>
-          <h1 className="text-4xl font-bold text-white leading-tight mb-4">
-            Join your team on EstateFlow
-          </h1>
-          <p className="text-violet-200 text-lg">
-            Create your agent account and start managing your leads today.
-          </p>
-        </div>
-        <div className="relative z-10 space-y-3">
-          {[
-            "Track your assigned leads",
-            "View property listings",
-            "Contact clients directly",
-            "Works on mobile & desktop",
-          ].map((f) => (
-            <div key={f} className="flex items-center gap-3">
-              <div className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center shrink-0">
-                <span className="text-white text-xs">✓</span>
-              </div>
-              <span className="text-violet-100 text-sm">{f}</span>
-            </div>
-          ))}
-        </div>
-      </div>
+    <div className="min-h-screen flex bg-slate-950 overflow-hidden">
 
-      {/* Right form panel */}
-      <div className="flex-1 flex items-center justify-center p-6">
-        <div className="w-full max-w-md">
-          {/* Mobile logo */}
-          <div className="flex items-center gap-2 mb-8 lg:hidden">
-            <div className="w-9 h-9 rounded-xl bg-violet-600 flex items-center justify-center">
-              <span className="text-white font-bold">E</span>
+      {/* ── LEFT PANEL ── */}
+      <div className="hidden lg:flex lg:w-[45%] relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-indigo-900 via-violet-800 to-purple-900" />
+
+        {/* Animated blobs */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute -top-20 -right-20 w-80 h-80 bg-violet-500 rounded-full opacity-20 blur-3xl animate-pulse" />
+          <div className="absolute bottom-20 -left-10 w-72 h-72 bg-indigo-400 rounded-full opacity-20 blur-3xl animate-pulse" style={{ animationDelay: "1.5s" }} />
+          <div className="absolute top-1/2 left-1/2 w-60 h-60 bg-purple-500 rounded-full opacity-10 blur-3xl animate-pulse" style={{ animationDelay: "0.8s" }} />
+        </div>
+
+        {/* Grid overlay */}
+        <div className="absolute inset-0 opacity-5"
+          style={{
+            backgroundImage: "linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)",
+            backgroundSize: "40px 40px"
+          }}
+        />
+
+        <div className="relative z-10 flex flex-col justify-between p-12 w-full">
+          {/* Logo */}
+          <div className="flex items-center gap-3">
+            <div className="w-11 h-11 rounded-2xl bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center shadow-lg">
+              <span className="text-white font-black text-xl">E</span>
             </div>
-            <span className="text-slate-900 dark:text-white font-bold text-xl">EstateFlow</span>
+            <div>
+              <span className="text-white font-black text-xl tracking-tight">EstateFlow</span>
+              <p className="text-violet-300 text-xs">Real Estate CRM</p>
+            </div>
           </div>
 
-          <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-1">
-            Create agent account
-          </h2>
-          <p className="text-slate-500 dark:text-slate-400 mb-2">
-            Fill in your details to get started as an agent.
-          </p>
-
-          {/* Info notice */}
-          <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl px-4 py-3 mb-6">
-            <p className="text-sm text-blue-700 dark:text-blue-300">
-              <span className="font-semibold">Note:</span> Public signup creates an Agent account.
-              Admin and Manager accounts are created by your Admin inside the dashboard.
+          {/* Headline */}
+          <div>
+            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur border border-white/20 rounded-full px-4 py-1.5 mb-6">
+              <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
+              <span className="text-white/80 text-xs font-medium">Free to join — no credit card needed</span>
+            </div>
+            <h1 className="text-4xl font-black text-white leading-tight mb-4">
+              Start closing deals<br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-200 to-pink-200">
+                from day one.
+              </span>
+            </h1>
+            <p className="text-violet-200 text-base leading-relaxed">
+              Join hundreds of real estate agents using EstateFlow to manage leads and grow their business.
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} noValidate className="space-y-4">
-            <FormInput
-              label="Full Name"
-              name="name"
-              type="text"
-              value={form.name}
-              onChange={handleChange}
-              placeholder="Himanshu Sharma"
-              error={errors.name}
-              icon={<HiUser className="w-4 h-4" />}
-              required
-              autoComplete="name"
-            />
-            <FormInput
-              label="Email Address"
-              name="email"
-              type="email"
-              value={form.email}
-              onChange={handleChange}
-              placeholder="you@company.com"
-              error={errors.email}
-              icon={<HiMail className="w-4 h-4" />}
-              required
-              autoComplete="email"
-            />
-            <FormInput
-              label="Password"
-              name="password"
-              type={showPassword ? "text" : "password"}
-              value={form.password}
-              onChange={handleChange}
-              placeholder="Min. 6 characters"
-              error={errors.password}
-              icon={<HiLockClosed className="w-4 h-4" />}
-              required
-              rightElement={
-                <button
-                  type="button"
-                  onClick={() => setShowPassword((p) => !p)}
-                  className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
-                >
-                  {showPassword ? <HiEyeOff className="w-4 h-4" /> : <HiEye className="w-4 h-4" />}
-                </button>
-              }
-            />
-            <FormInput
-              label="Confirm Password"
-              name="confirm"
-              type="password"
-              value={form.confirm}
-              onChange={handleChange}
-              placeholder="Repeat your password"
-              error={errors.confirm}
-              icon={<HiLockClosed className="w-4 h-4" />}
-              required
-            />
+          {/* Feature list */}
+          <div className="space-y-3">
+            {features.map((f, i) => (
+              <div
+                key={f.text}
+                className="flex items-center gap-3 bg-white/8 backdrop-blur border border-white/10 rounded-xl px-4 py-3 hover:bg-white/12 transition-all duration-300"
+                style={{
+                  animation: "slideInLeft 0.5s ease forwards",
+                  animationDelay: `${i * 0.1}s`,
+                  opacity: 0,
+                }}
+              >
+                <span className="text-xl shrink-0">{f.icon}</span>
+                <span className="text-violet-100 text-sm">{f.text}</span>
+                <HiCheckCircle className="w-4 h-4 text-emerald-400 ml-auto shrink-0" />
+              </div>
+            ))}
+          </div>
 
-            <Button type="submit" loading={loading} className="w-full mt-2" size="lg">
-              Create Agent Account
-            </Button>
-          </form>
-
-          <p className="text-center text-sm text-slate-500 dark:text-slate-400 mt-6">
-            Already have an account?{" "}
-            <Link
-              to="/login"
-              className="text-violet-600 dark:text-violet-400 font-medium hover:underline"
-            >
-              Sign in
-            </Link>
+          {/* Bottom note */}
+          <p className="text-violet-300/60 text-xs">
+            Admin & Manager accounts are created by your organisation admin.
           </p>
         </div>
       </div>
+
+      {/* ── RIGHT PANEL ── */}
+      <div className="flex-1 flex items-center justify-center p-6 bg-slate-950 relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-96 h-96 bg-violet-900/15 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 right-0 w-64 h-64 bg-indigo-900/15 rounded-full blur-3xl pointer-events-none" />
+
+        <div
+          className={`relative w-full max-w-md transition-all duration-700 ${
+            mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+          }`}
+        >
+          {/* Mobile logo */}
+          <div className="flex items-center gap-2.5 mb-8 lg:hidden">
+            <div className="w-9 h-9 rounded-xl bg-violet-600 flex items-center justify-center">
+              <span className="text-white font-bold">E</span>
+            </div>
+            <span className="text-white font-bold text-xl">EstateFlow</span>
+          </div>
+
+          {/* Step indicator */}
+          <div className="flex items-center gap-3 mb-8">
+            <div className="flex items-center gap-2">
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 ${
+                step >= 1 ? "bg-violet-600 text-white" : "bg-slate-800 text-slate-500"
+              }`}>
+                {step > 1 ? "✓" : "1"}
+              </div>
+              <span className={`text-sm font-medium transition-colors ${step === 1 ? "text-white" : "text-slate-500"}`}>
+                Your Info
+              </span>
+            </div>
+            <div className={`flex-1 h-px transition-all duration-500 ${step > 1 ? "bg-violet-600" : "bg-slate-800"}`} />
+            <div className="flex items-center gap-2">
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 ${
+                step >= 2 ? "bg-violet-600 text-white" : "bg-slate-800 text-slate-500"
+              }`}>
+                2
+              </div>
+              <span className={`text-sm font-medium transition-colors ${step === 2 ? "text-white" : "text-slate-500"}`}>
+                Password
+              </span>
+            </div>
+          </div>
+
+          {/* Header */}
+          <div className="mb-7">
+            <h2 className="text-3xl font-black text-white mb-1">
+              {step === 1 ? "Create account" : "Set your password"}
+            </h2>
+            <p className="text-slate-400 text-sm">
+              {step === 1 ? "Step 1 of 2 — Enter your basic details" : "Step 2 of 2 — Choose a strong password"}
+            </p>
+          </div>
+
+          {/* ── STEP 1 ── */}
+          {step === 1 && (
+            <form onSubmit={handleNext} noValidate className="space-y-5">
+              {/* Name */}
+              <div className="space-y-1.5">
+                <label className="text-sm font-medium text-slate-300">Full Name</label>
+                <div className={`relative transition-all duration-200 ${focused === "name" ? "scale-[1.01]" : ""}`}>
+                  <HiUser className={`absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors ${focused === "name" ? "text-violet-400" : "text-slate-500"}`} />
+                  <input
+                    name="name"
+                    type="text"
+                    value={form.name}
+                    onChange={handleChange}
+                    onFocus={() => setFocused("name")}
+                    onBlur={() => setFocused("")}
+                    placeholder="Himanshu Sharma"
+                    autoComplete="name"
+                    className={inputClass("name")}
+                  />
+                </div>
+                {errors.name && <p className="text-xs text-red-400">⚠ {errors.name}</p>}
+              </div>
+
+              {/* Email */}
+              <div className="space-y-1.5">
+                <label className="text-sm font-medium text-slate-300">Email Address</label>
+                <div className={`relative transition-all duration-200 ${focused === "email" ? "scale-[1.01]" : ""}`}>
+                  <HiMail className={`absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors ${focused === "email" ? "text-violet-400" : "text-slate-500"}`} />
+                  <input
+                    name="email"
+                    type="email"
+                    value={form.email}
+                    onChange={handleChange}
+                    onFocus={() => setFocused("email")}
+                    onBlur={() => setFocused("")}
+                    placeholder="you@company.com"
+                    autoComplete="email"
+                    className={inputClass("email")}
+                  />
+                </div>
+                {errors.email && <p className="text-xs text-red-400">⚠ {errors.email}</p>}
+              </div>
+
+              <button
+                type="submit"
+                className="w-full relative overflow-hidden group bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-semibold py-3.5 rounded-xl transition-all duration-300 shadow-lg shadow-violet-900/40 hover:scale-[1.01] active:scale-[0.99]"
+              >
+                <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+                <span className="relative flex items-center justify-center gap-2">
+                  Continue
+                  <HiArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </span>
+              </button>
+            </form>
+          )}
+
+          {/* ── STEP 2 ── */}
+          {step === 2 && (
+            <form onSubmit={handleSubmit} noValidate className="space-y-5">
+              {/* Password */}
+              <div className="space-y-1.5">
+                <label className="text-sm font-medium text-slate-300">Password</label>
+                <div className={`relative transition-all duration-200 ${focused === "password" ? "scale-[1.01]" : ""}`}>
+                  <HiLockClosed className={`absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors ${focused === "password" ? "text-violet-400" : "text-slate-500"}`} />
+                  <input
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    value={form.password}
+                    onChange={handleChange}
+                    onFocus={() => setFocused("password")}
+                    onBlur={() => setFocused("")}
+                    placeholder="Min. 6 characters"
+                    className={`${inputClass("password")} pr-12`}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((p) => !p)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors"
+                  >
+                    {showPassword ? <HiEyeOff className="w-4 h-4" /> : <HiEye className="w-4 h-4" />}
+                  </button>
+                </div>
+
+                {/* Password strength bar */}
+                {form.password && (
+                  <div className="space-y-1.5">
+                    <div className="flex gap-1">
+                      {[1, 2, 3, 4, 5].map((i) => (
+                        <div
+                          key={i}
+                          className={`h-1 flex-1 rounded-full transition-all duration-300 ${
+                            i <= strength.score ? strength.color : "bg-slate-800"
+                          }`}
+                        />
+                      ))}
+                    </div>
+                    <p className={`text-xs font-medium ${
+                      strength.label === "Weak" ? "text-red-400" :
+                      strength.label === "Fair" ? "text-amber-400" :
+                      strength.label === "Good" ? "text-blue-400" :
+                      "text-emerald-400"
+                    }`}>
+                      Password strength: {strength.label}
+                    </p>
+                  </div>
+                )}
+                {errors.password && <p className="text-xs text-red-400">⚠ {errors.password}</p>}
+              </div>
+
+              {/* Confirm password */}
+              <div className="space-y-1.5">
+                <label className="text-sm font-medium text-slate-300">Confirm Password</label>
+                <div className={`relative transition-all duration-200 ${focused === "confirm" ? "scale-[1.01]" : ""}`}>
+                  <HiLockClosed className={`absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors ${focused === "confirm" ? "text-violet-400" : "text-slate-500"}`} />
+                  <input
+                    name="confirm"
+                    type={showConfirm ? "text" : "password"}
+                    value={form.confirm}
+                    onChange={handleChange}
+                    onFocus={() => setFocused("confirm")}
+                    onBlur={() => setFocused("")}
+                    placeholder="Repeat your password"
+                    className={`${inputClass("confirm")} pr-12`}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirm((p) => !p)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors"
+                  >
+                    {showConfirm ? <HiEyeOff className="w-4 h-4" /> : <HiEye className="w-4 h-4" />}
+                  </button>
+                </div>
+                {/* Match indicator */}
+                {form.confirm && form.password && (
+                  <p className={`text-xs font-medium flex items-center gap-1 ${
+                    form.confirm === form.password ? "text-emerald-400" : "text-red-400"
+                  }`}>
+                    {form.confirm === form.password ? "✓ Passwords match" : "✗ Passwords don't match"}
+                  </p>
+                )}
+                {errors.confirm && <p className="text-xs text-red-400">⚠ {errors.confirm}</p>}
+              </div>
+
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => setStep(1)}
+                  className="px-5 py-3.5 rounded-xl border border-slate-700 text-slate-400 hover:text-white hover:border-slate-600 text-sm font-medium transition-all duration-200"
+                >
+                  ← Back
+                </button>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="flex-1 relative overflow-hidden group bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-semibold py-3.5 rounded-xl transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed shadow-lg shadow-violet-900/40 hover:scale-[1.01] active:scale-[0.99]"
+                >
+                  <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+                  <span className="relative flex items-center justify-center gap-2">
+                    {loading ? (
+                      <>
+                        <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                        </svg>
+                        Creating account...
+                      </>
+                    ) : (
+                      <>
+                        Create Account
+                        <HiArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      </>
+                    )}
+                  </span>
+                </button>
+              </div>
+            </form>
+          )}
+
+          {/* Divider */}
+          <div className="flex items-center gap-3 my-6">
+            <div className="flex-1 h-px bg-slate-800" />
+            <span className="text-xs text-slate-600">or</span>
+            <div className="flex-1 h-px bg-slate-800" />
+          </div>
+
+          <p className="text-center text-sm text-slate-500">
+            Already have an account?{" "}
+            <Link to="/login" className="text-violet-400 hover:text-violet-300 font-semibold transition-colors">
+              Sign in →
+            </Link>
+          </p>
+
+          <p className="text-center text-xs text-slate-700 mt-5 flex items-center justify-center gap-1.5">
+            <span>🔒</span>
+            Secured with Firebase Authentication
+          </p>
+        </div>
+      </div>
+
+      <style>{`
+        @keyframes slideInLeft {
+          from { opacity: 0; transform: translateX(-20px); }
+          to { opacity: 1; transform: translateX(0); }
+        }
+      `}</style>
     </div>
   );
 }
