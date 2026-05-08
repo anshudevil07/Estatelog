@@ -259,15 +259,15 @@ export default function LoginPage() {
           </div>
 
           <p className="text-center text-sm text-white/30">
-            Don't have an account?{" "}
-            <Link to="/signup" className="text-violet-300 hover:text-violet-200 font-semibold transition-colors">
-              Create one free →
+            Forgot your password?{" "}
+            <Link to="/forgot-password" className="text-violet-300 hover:text-violet-200 font-semibold transition-colors">
+              Reset it here →
             </Link>
           </p>
         </div>
 
         <p className="text-center text-xs text-white/20 mt-4 flex items-center justify-center gap-1.5">
-          🔒 Secured with Firebase Authentication
+          🔒 Secured with Firebase Authentication · Accounts created by Admin
         </p>
       </div>
 
