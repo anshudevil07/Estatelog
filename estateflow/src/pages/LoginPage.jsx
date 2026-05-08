@@ -4,26 +4,7 @@ import { HiMail, HiLockClosed, HiEye, HiEyeOff, HiArrowRight } from "react-icons
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
 import { validateEmail } from "../utils/validators";
-
-// Floating property cards shown on the left panel
-const floatingCards = [
-  { title: "Sunset Villa", location: "Mumbai, MH", price: "₹2.4Cr", badge: "Available", color: "from-violet-500 to-purple-600", delay: "0s" },
-  { title: "Sky Penthouse", location: "Pune, MH", price: "₹5.1Cr", badge: "Featured", color: "from-blue-500 to-cyan-500", delay: "0.4s" },
-  { title: "Green Residency", location: "Bangalore, KA", price: "₹98L", badge: "Sold", color: "from-emerald-500 to-teal-500", delay: "0.8s" },
-];
-
-// Animated stat counter
-function StatCard({ value, label, delay }) {
-  return (
-    <div
-      className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-4 text-center"
-      style={{ animationDelay: delay }}
-    >
-      <p className="text-2xl font-black text-white">{value}</p>
-      <p className="text-violet-200 text-xs mt-0.5">{label}</p>
-    </div>
-  );
-}
+import AuthIllustration from "../components/auth/AuthIllustration";
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -89,97 +70,9 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex bg-slate-950 overflow-hidden">
 
-      {/* ── LEFT PANEL ── */}
-      <div className="hidden lg:flex lg:w-[55%] relative overflow-hidden">
-        {/* Animated gradient background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-violet-900 via-violet-700 to-indigo-900" />
-
-        {/* Animated mesh blobs */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-32 -left-32 w-96 h-96 bg-violet-500 rounded-full opacity-20 blur-3xl animate-pulse" />
-          <div className="absolute top-1/2 -right-20 w-80 h-80 bg-indigo-400 rounded-full opacity-20 blur-3xl animate-pulse" style={{ animationDelay: "1s" }} />
-          <div className="absolute -bottom-20 left-1/3 w-72 h-72 bg-purple-500 rounded-full opacity-20 blur-3xl animate-pulse" style={{ animationDelay: "2s" }} />
-        </div>
-
-        {/* Grid pattern overlay */}
-        <div className="absolute inset-0 opacity-5"
-          style={{
-            backgroundImage: "linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)",
-            backgroundSize: "40px 40px"
-          }}
-        />
-
-        {/* Content */}
-        <div className="relative z-10 flex flex-col justify-between p-12 w-full">
-          {/* Logo */}
-          <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-2xl bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center shadow-lg">
-              <span className="text-white font-black text-xl">E</span>
-            </div>
-            <div>
-              <span className="text-white font-black text-xl tracking-tight">EstateFlow</span>
-              <p className="text-violet-300 text-xs">Real Estate CRM</p>
-            </div>
-          </div>
-
-          {/* Main headline */}
-          <div>
-            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur border border-white/20 rounded-full px-4 py-1.5 mb-6">
-              <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
-              <span className="text-white/80 text-xs font-medium">Trusted by 500+ agents across India</span>
-            </div>
-
-            <h1 className="text-5xl font-black text-white leading-tight mb-4">
-              Close more deals,<br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-200 to-pink-200">
-                faster than ever.
-              </span>
-            </h1>
-            <p className="text-violet-200 text-lg leading-relaxed max-w-md">
-              India's most powerful real estate CRM. Manage properties, track leads, and grow your business.
-            </p>
-          </div>
-
-          {/* Floating property cards */}
-          <div className="space-y-3">
-            {floatingCards.map((card, i) => (
-              <div
-                key={card.title}
-                className="flex items-center gap-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-4 hover:bg-white/15 transition-all duration-300 hover:translate-x-1"
-                style={{
-                  animation: "slideInLeft 0.6s ease forwards",
-                  animationDelay: `${i * 0.15}s`,
-                  opacity: 0,
-                }}
-              >
-                <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${card.color} flex items-center justify-center shrink-0 shadow-lg`}>
-                  <span className="text-white text-lg">🏠</span>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-white font-semibold text-sm">{card.title}</p>
-                  <p className="text-violet-300 text-xs">{card.location}</p>
-                </div>
-                <div className="text-right">
-                  <p className="text-white font-bold text-sm">{card.price}</p>
-                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                    card.badge === "Available" ? "bg-emerald-500/20 text-emerald-300" :
-                    card.badge === "Featured" ? "bg-amber-500/20 text-amber-300" :
-                    "bg-blue-500/20 text-blue-300"
-                  }`}>
-                    {card.badge}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Stats */}
-          <div className="grid grid-cols-3 gap-3">
-            <StatCard value="2,400+" label="Properties" delay="0s" />
-            <StatCard value="₹210Cr+" label="Deals Closed" delay="0.1s" />
-            <StatCard value="500+" label="Agents" delay="0.2s" />
-          </div>
-        </div>
+      {/* ── LEFT PANEL — Animated Illustration ── */}
+      <div className="hidden lg:block lg:w-[55%] relative">
+        <AuthIllustration />
       </div>
 
       {/* ── RIGHT PANEL ── */}
@@ -359,13 +252,6 @@ export default function LoginPage() {
         </div>
       </div>
 
-      {/* CSS animations */}
-      <style>{`
-        @keyframes slideInLeft {
-          from { opacity: 0; transform: translateX(-20px); }
-          to { opacity: 1; transform: translateX(0); }
-        }
-      `}</style>
     </div>
   );
 }

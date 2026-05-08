@@ -4,6 +4,7 @@ import { HiMail, HiLockClosed, HiUser, HiEye, HiEyeOff, HiArrowRight, HiCheckCir
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
 import { validateEmail } from "../utils/validators";
+import AuthIllustration from "../components/auth/AuthIllustration";
 
 // Password strength checker
 function getPasswordStrength(password) {
@@ -20,15 +21,6 @@ function getPasswordStrength(password) {
   if (score <= 3) return { score, label: "Good", color: "bg-blue-500" };
   return { score, label: "Strong", color: "bg-emerald-500" };
 }
-
-const features = [
-  { icon: "🏠", text: "Manage your assigned properties" },
-  { icon: "👥", text: "Track and follow up on leads" },
-  { icon: "📊", text: "View your personal performance" },
-  { icon: "📱", text: "Works on mobile & desktop" },
-  { icon: "🔔", text: "Real-time activity notifications" },
-  { icon: "🔒", text: "Secure Firebase authentication" },
-];
 
 export default function SignupPage() {
   const navigate = useNavigate();
@@ -118,78 +110,9 @@ export default function SignupPage() {
   return (
     <div className="min-h-screen flex bg-slate-950 overflow-hidden">
 
-      {/* ── LEFT PANEL ── */}
-      <div className="hidden lg:flex lg:w-[45%] relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-indigo-900 via-violet-800 to-purple-900" />
-
-        {/* Animated blobs */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-20 -right-20 w-80 h-80 bg-violet-500 rounded-full opacity-20 blur-3xl animate-pulse" />
-          <div className="absolute bottom-20 -left-10 w-72 h-72 bg-indigo-400 rounded-full opacity-20 blur-3xl animate-pulse" style={{ animationDelay: "1.5s" }} />
-          <div className="absolute top-1/2 left-1/2 w-60 h-60 bg-purple-500 rounded-full opacity-10 blur-3xl animate-pulse" style={{ animationDelay: "0.8s" }} />
-        </div>
-
-        {/* Grid overlay */}
-        <div className="absolute inset-0 opacity-5"
-          style={{
-            backgroundImage: "linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)",
-            backgroundSize: "40px 40px"
-          }}
-        />
-
-        <div className="relative z-10 flex flex-col justify-between p-12 w-full">
-          {/* Logo */}
-          <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-2xl bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center shadow-lg">
-              <span className="text-white font-black text-xl">E</span>
-            </div>
-            <div>
-              <span className="text-white font-black text-xl tracking-tight">EstateFlow</span>
-              <p className="text-violet-300 text-xs">Real Estate CRM</p>
-            </div>
-          </div>
-
-          {/* Headline */}
-          <div>
-            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur border border-white/20 rounded-full px-4 py-1.5 mb-6">
-              <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
-              <span className="text-white/80 text-xs font-medium">Free to join — no credit card needed</span>
-            </div>
-            <h1 className="text-4xl font-black text-white leading-tight mb-4">
-              Start closing deals<br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-200 to-pink-200">
-                from day one.
-              </span>
-            </h1>
-            <p className="text-violet-200 text-base leading-relaxed">
-              Join hundreds of real estate agents using EstateFlow to manage leads and grow their business.
-            </p>
-          </div>
-
-          {/* Feature list */}
-          <div className="space-y-3">
-            {features.map((f, i) => (
-              <div
-                key={f.text}
-                className="flex items-center gap-3 bg-white/8 backdrop-blur border border-white/10 rounded-xl px-4 py-3 hover:bg-white/12 transition-all duration-300"
-                style={{
-                  animation: "slideInLeft 0.5s ease forwards",
-                  animationDelay: `${i * 0.1}s`,
-                  opacity: 0,
-                }}
-              >
-                <span className="text-xl shrink-0">{f.icon}</span>
-                <span className="text-violet-100 text-sm">{f.text}</span>
-                <HiCheckCircle className="w-4 h-4 text-emerald-400 ml-auto shrink-0" />
-              </div>
-            ))}
-          </div>
-
-          {/* Bottom note */}
-          <p className="text-violet-300/60 text-xs">
-            Admin & Manager accounts are created by your organisation admin.
-          </p>
-        </div>
+      {/* ── LEFT PANEL — Animated Illustration ── */}
+      <div className="hidden lg:block lg:w-[45%] relative">
+        <AuthIllustration />
       </div>
 
       {/* ── RIGHT PANEL ── */}
@@ -444,12 +367,6 @@ export default function SignupPage() {
         </div>
       </div>
 
-      <style>{`
-        @keyframes slideInLeft {
-          from { opacity: 0; transform: translateX(-20px); }
-          to { opacity: 1; transform: translateX(0); }
-        }
-      `}</style>
     </div>
   );
 }
