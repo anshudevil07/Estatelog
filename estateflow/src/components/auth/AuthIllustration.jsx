@@ -1,267 +1,274 @@
-// Animated real estate illustration for auth pages
-// Pure CSS + SVG — no external image dependencies
+// Premium abstract illustration for auth pages
+// Inspired by modern SaaS products like Linear, Vercel, Stripe
 
-export default function AuthIllustration() {
+export default function AuthIllustration({ variant = "login" }) {
   return (
-    <div className="relative w-full h-full flex items-center justify-center overflow-hidden select-none">
+    <div className="relative w-full h-full min-h-screen overflow-hidden bg-[#0a0a0f]">
 
-      {/* ── Sky gradient background ── */}
-      <div className="absolute inset-0 bg-gradient-to-b from-indigo-950 via-violet-950 to-slate-950" />
+      {/* ── Deep space gradient base ── */}
+      <div className="absolute inset-0"
+        style={{
+          background: variant === "login"
+            ? "radial-gradient(ellipse 80% 60% at 50% 0%, #3b0764 0%, #0a0a0f 70%)"
+            : "radial-gradient(ellipse 80% 60% at 50% 0%, #1e1b4b 0%, #0a0a0f 70%)"
+        }}
+      />
 
-      {/* ── Stars ── */}
-      <div className="absolute inset-0">
-        {[...Array(40)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute rounded-full bg-white"
+      {/* ── Large glowing orbs ── */}
+      <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full opacity-30"
+        style={{
+          background: "radial-gradient(circle, #7c3aed 0%, transparent 70%)",
+          animation: "orbFloat 8s ease-in-out infinite",
+          filter: "blur(40px)"
+        }}
+      />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[400px] h-[400px] rounded-full opacity-25"
+        style={{
+          background: "radial-gradient(circle, #4f46e5 0%, transparent 70%)",
+          animation: "orbFloat 10s ease-in-out infinite reverse",
+          filter: "blur(50px)"
+        }}
+      />
+      <div className="absolute top-[40%] right-[10%] w-[300px] h-[300px] rounded-full opacity-20"
+        style={{
+          background: "radial-gradient(circle, #ec4899 0%, transparent 70%)",
+          animation: "orbFloat 12s ease-in-out infinite",
+          animationDelay: "2s",
+          filter: "blur(60px)"
+        }}
+      />
+
+      {/* ── Noise texture overlay ── */}
+      <div className="absolute inset-0 opacity-[0.03]"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
+          backgroundRepeat: "repeat",
+          backgroundSize: "128px"
+        }}
+      />
+
+      {/* ── Grid lines ── */}
+      <div className="absolute inset-0 opacity-[0.04]"
+        style={{
+          backgroundImage: "linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)",
+          backgroundSize: "60px 60px"
+        }}
+      />
+
+      {/* ── Floating geometric shapes ── */}
+      {/* Large ring */}
+      <div className="absolute top-[15%] left-[10%]"
+        style={{ animation: "spinSlow 20s linear infinite" }}>
+        <svg width="180" height="180" viewBox="0 0 180 180" fill="none">
+          <circle cx="90" cy="90" r="80" stroke="url(#ring1)" strokeWidth="1.5" strokeDasharray="8 6" />
+          <circle cx="90" cy="90" r="60" stroke="url(#ring2)" strokeWidth="0.8" opacity="0.5" />
+          <defs>
+            <linearGradient id="ring1" x1="0" y1="0" x2="180" y2="180">
+              <stop offset="0%" stopColor="#a78bfa" stopOpacity="0.8" />
+              <stop offset="100%" stopColor="#ec4899" stopOpacity="0.2" />
+            </linearGradient>
+            <linearGradient id="ring2" x1="0" y1="0" x2="180" y2="180">
+              <stop offset="0%" stopColor="#818cf8" stopOpacity="0.6" />
+              <stop offset="100%" stopColor="#a78bfa" stopOpacity="0.1" />
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+
+      {/* Small ring bottom right */}
+      <div className="absolute bottom-[20%] right-[8%]"
+        style={{ animation: "spinSlow 15s linear infinite reverse" }}>
+        <svg width="120" height="120" viewBox="0 0 120 120" fill="none">
+          <circle cx="60" cy="60" r="55" stroke="url(#ring3)" strokeWidth="1" strokeDasharray="4 4" />
+          <defs>
+            <linearGradient id="ring3" x1="0" y1="0" x2="120" y2="120">
+              <stop offset="0%" stopColor="#6366f1" stopOpacity="0.7" />
+              <stop offset="100%" stopColor="#ec4899" stopOpacity="0.2" />
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+
+      {/* Floating triangle */}
+      <div className="absolute top-[55%] left-[5%]"
+        style={{ animation: "floatY 7s ease-in-out infinite", animationDelay: "1s" }}>
+        <svg width="60" height="60" viewBox="0 0 60 60" fill="none">
+          <polygon points="30,5 55,50 5,50" stroke="#a78bfa" strokeWidth="1.5" fill="none" opacity="0.5" />
+        </svg>
+      </div>
+
+      {/* Floating diamond */}
+      <div className="absolute top-[30%] right-[12%]"
+        style={{ animation: "floatY 9s ease-in-out infinite", animationDelay: "3s" }}>
+        <svg width="50" height="50" viewBox="0 0 50 50" fill="none">
+          <rect x="10" y="10" width="30" height="30" stroke="#818cf8" strokeWidth="1.5" fill="none" opacity="0.6" transform="rotate(45 25 25)" />
+        </svg>
+      </div>
+
+      {/* Floating plus */}
+      <div className="absolute top-[70%] right-[20%]"
+        style={{ animation: "floatY 6s ease-in-out infinite", animationDelay: "0.5s" }}>
+        <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
+          <line x1="15" y1="2" x2="15" y2="28" stroke="#c4b5fd" strokeWidth="2" opacity="0.5" />
+          <line x1="2" y1="15" x2="28" y2="15" stroke="#c4b5fd" strokeWidth="2" opacity="0.5" />
+        </svg>
+      </div>
+
+      {/* ── Glowing dots scattered ── */}
+      {[
+        { top: "20%", left: "30%", size: 6, color: "#a78bfa", delay: "0s" },
+        { top: "45%", left: "70%", size: 4, color: "#818cf8", delay: "1s" },
+        { top: "65%", left: "25%", size: 5, color: "#ec4899", delay: "2s" },
+        { top: "80%", left: "55%", size: 3, color: "#a78bfa", delay: "0.5s" },
+        { top: "15%", left: "60%", size: 4, color: "#6366f1", delay: "1.5s" },
+        { top: "35%", left: "45%", size: 3, color: "#c4b5fd", delay: "2.5s" },
+        { top: "90%", left: "15%", size: 5, color: "#818cf8", delay: "3s" },
+        { top: "10%", left: "80%", size: 4, color: "#ec4899", delay: "0.8s" },
+      ].map((dot, i) => (
+        <div key={i} className="absolute rounded-full"
+          style={{
+            top: dot.top, left: dot.left,
+            width: dot.size, height: dot.size,
+            backgroundColor: dot.color,
+            boxShadow: `0 0 ${dot.size * 3}px ${dot.color}`,
+            animation: `pulse ${2 + i * 0.3}s ease-in-out infinite`,
+            animationDelay: dot.delay,
+          }}
+        />
+      ))}
+
+      {/* ── Central hero element ── */}
+      <div className="absolute inset-0 flex items-center justify-center">
+        <div className="relative flex items-center justify-center"
+          style={{ animation: "floatY 6s ease-in-out infinite" }}>
+
+          {/* Outer glow ring */}
+          <div className="absolute w-64 h-64 rounded-full opacity-20"
             style={{
-              width: Math.random() * 2 + 1 + "px",
-              height: Math.random() * 2 + 1 + "px",
-              top: Math.random() * 60 + "%",
-              left: Math.random() * 100 + "%",
-              opacity: Math.random() * 0.7 + 0.2,
-              animation: `twinkle ${Math.random() * 3 + 2}s ease-in-out infinite`,
-              animationDelay: Math.random() * 3 + "s",
+              background: "radial-gradient(circle, #7c3aed, transparent 70%)",
+              animation: "pulse 3s ease-in-out infinite"
             }}
           />
-        ))}
+
+          {/* Rotating dashed ring */}
+          <div className="absolute w-52 h-52"
+            style={{ animation: "spinSlow 12s linear infinite" }}>
+            <svg width="208" height="208" viewBox="0 0 208 208" fill="none">
+              <circle cx="104" cy="104" r="100" stroke="url(#heroRing)" strokeWidth="1" strokeDasharray="6 4" />
+              <defs>
+                <linearGradient id="heroRing" x1="0" y1="0" x2="208" y2="208">
+                  <stop offset="0%" stopColor="#a78bfa" />
+                  <stop offset="50%" stopColor="#ec4899" />
+                  <stop offset="100%" stopColor="#6366f1" />
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+
+          {/* Inner glass card */}
+          <div className="relative w-36 h-36 rounded-3xl flex flex-col items-center justify-center gap-2"
+            style={{
+              background: "linear-gradient(135deg, rgba(124,58,237,0.3) 0%, rgba(79,70,229,0.2) 100%)",
+              backdropFilter: "blur(20px)",
+              border: "1px solid rgba(167,139,250,0.3)",
+              boxShadow: "0 0 60px rgba(124,58,237,0.3), inset 0 1px 0 rgba(255,255,255,0.1)"
+            }}>
+            <span className="text-4xl">🏢</span>
+            <span className="text-white font-black text-sm tracking-tight">EstateFlow</span>
+            <div className="flex items-center gap-1">
+              <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />
+              <span className="text-emerald-400 text-xs font-medium">Live</span>
+            </div>
+          </div>
+
+          {/* Orbiting mini cards */}
+          <OrbitCard angle={0} radius={140} icon="🏠" label="Property" delay="0s" />
+          <OrbitCard angle={120} radius={140} icon="👤" label="Lead" delay="0s" />
+          <OrbitCard angle={240} radius={140} icon="💰" label="Deal" delay="0s" />
+        </div>
       </div>
 
-      {/* ── Moon ── */}
-      <div className="absolute top-12 right-16 w-16 h-16 rounded-full bg-gradient-to-br from-yellow-100 to-amber-200 shadow-[0_0_40px_rgba(251,191,36,0.4)]"
-        style={{ animation: "float 6s ease-in-out infinite" }}
-      />
-      <div className="absolute top-10 right-12 w-14 h-14 rounded-full bg-indigo-950 opacity-80" />
-
-      {/* ── Clouds ── */}
-      <Cloud top="15%" delay="0s" duration="18s" opacity={0.12} size={1} />
-      <Cloud top="25%" delay="6s" duration="24s" opacity={0.08} size={0.7} />
-      <Cloud top="10%" delay="12s" duration="30s" opacity={0.06} size={1.3} />
-
-      {/* ── City skyline ── */}
-      <div className="absolute bottom-0 left-0 right-0 flex items-end justify-center gap-1 px-4">
-
-        {/* Far background buildings — dark, small */}
-        <Building height={80} width={18} color="#1e1b4b" windows={2} cols={1} delay="0s" glow={false} />
-        <Building height={110} width={22} color="#1e1b4b" windows={3} cols={1} delay="0.1s" glow={false} />
-        <Building height={65} width={16} color="#1e1b4b" windows={2} cols={1} delay="0.2s" glow={false} />
-        <Building height={130} width={20} color="#1e1b4b" windows={4} cols={1} delay="0.3s" glow={false} />
-        <Building height={90} width={18} color="#1e1b4b" windows={3} cols={1} delay="0.4s" glow={false} />
-        <Building height={150} width={24} color="#1e1b4b" windows={5} cols={2} delay="0.5s" glow={false} />
-        <Building height={70} width={16} color="#1e1b4b" windows={2} cols={1} delay="0.6s" glow={false} />
-        <Building height={120} width={20} color="#1e1b4b" windows={4} cols={1} delay="0.7s" glow={false} />
-        <Building height={85} width={18} color="#1e1b4b" windows={3} cols={1} delay="0.8s" glow={false} />
-        <Building height={160} width={26} color="#1e1b4b" windows={5} cols={2} delay="0.9s" glow={false} />
-        <Building height={75} width={16} color="#1e1b4b" windows={2} cols={1} delay="1s" glow={false} />
-        <Building height={100} width={20} color="#1e1b4b" windows={3} cols={1} delay="1.1s" glow={false} />
-
-        {/* Mid buildings — medium purple */}
-        <Building height={140} width={28} color="#2e1065" windows={4} cols={2} delay="0s" glow />
-        <Building height={200} width={34} color="#3b0764" windows={6} cols={2} delay="0.15s" glow />
-        <Building height={110} width={24} color="#2e1065" windows={3} cols={2} delay="0.3s" glow />
-        <Building height={240} width={38} color="#4c0519" windows={7} cols={3} delay="0.45s" glow accent="#7c3aed" />
-        <Building height={160} width={30} color="#2e1065" windows={5} cols={2} delay="0.6s" glow />
-        <Building height={280} width={42} color="#3b0764" windows={8} cols={3} delay="0.75s" glow accent="#6d28d9" />
-        <Building height={130} width={26} color="#2e1065" windows={4} cols={2} delay="0.9s" glow />
-        <Building height={190} width={32} color="#3b0764" windows={6} cols={2} delay="1.05s" glow />
-        <Building height={150} width={28} color="#2e1065" windows={5} cols={2} delay="1.2s" glow />
-
-        {/* Foreground buildings — bright violet */}
-        <Building height={180} width={36} color="#4c1d95" windows={5} cols={2} delay="0s" glow accent="#8b5cf6" />
-        <Building height={260} width={44} color="#5b21b6" windows={8} cols={3} delay="0.2s" glow accent="#7c3aed" tall />
-        <Building height={140} width={30} color="#4c1d95" windows={4} cols={2} delay="0.4s" glow />
-        <Building height={320} width={50} color="#6d28d9" windows={10} cols={3} delay="0.6s" glow accent="#a78bfa" tall />
-        <Building height={200} width={38} color="#5b21b6" windows={6} cols={3} delay="0.8s" glow accent="#8b5cf6" />
-        <Building height={170} width={32} color="#4c1d95" windows={5} cols={2} delay="1s" glow />
-        <Building height={290} width={46} color="#6d28d9" windows={9} cols={3} delay="1.2s" glow accent="#7c3aed" tall />
-        <Building height={150} width={28} color="#4c1d95" windows={4} cols={2} delay="1.4s" glow />
-      </div>
-
-      {/* ── Ground / road ── */}
-      <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-slate-950 to-transparent" />
-      <div className="absolute bottom-0 left-0 right-0 h-3 bg-slate-950" />
-
-      {/* ── Road lines ── */}
-      <div className="absolute bottom-1.5 left-0 right-0 flex justify-center gap-8">
-        {[...Array(8)].map((_, i) => (
-          <div key={i} className="w-8 h-0.5 bg-yellow-400/30 rounded-full" />
-        ))}
-      </div>
-
-      {/* ── Floating UI cards ── */}
-      <FloatingCard
-        style={{ top: "12%", left: "8%", animationDelay: "0s" }}
-        icon="🏠" title="New Listing" sub="Sunset Villa, Mumbai" badge="₹2.4Cr" badgeColor="text-emerald-400"
-      />
-      <FloatingCard
-        style={{ top: "35%", right: "6%", animationDelay: "1.5s" }}
-        icon="👤" title="New Lead" sub="Rahul Sharma" badge="Interested" badgeColor="text-violet-400"
-      />
-      <FloatingCard
-        style={{ bottom: "38%", left: "5%", animationDelay: "3s" }}
-        icon="💰" title="Deal Closed" sub="Sky Penthouse" badge="₹5.1Cr" badgeColor="text-amber-400"
+      {/* ── Bottom gradient fade ── */}
+      <div className="absolute bottom-0 left-0 right-0 h-32 pointer-events-none"
+        style={{ background: "linear-gradient(to top, #0a0a0f, transparent)" }}
       />
 
-      {/* ── Orbiting dot ── */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
-        style={{ animation: "orbit 12s linear infinite" }}>
-        <div className="w-3 h-3 rounded-full bg-violet-400 shadow-[0_0_12px_rgba(167,139,250,0.8)]"
-          style={{ transform: "translateX(160px)" }} />
-      </div>
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
-        style={{ animation: "orbit 18s linear infinite reverse" }}>
-        <div className="w-2 h-2 rounded-full bg-pink-400 shadow-[0_0_10px_rgba(244,114,182,0.8)]"
-          style={{ transform: "translateX(220px)" }} />
-      </div>
+      {/* ── Top gradient fade ── */}
+      <div className="absolute top-0 left-0 right-0 h-20 pointer-events-none"
+        style={{ background: "linear-gradient(to bottom, #0a0a0f 0%, transparent 100%)" }}
+      />
 
-      {/* ── Glow at horizon ── */}
-      <div className="absolute bottom-6 left-0 right-0 h-24 bg-gradient-to-t from-violet-900/30 to-transparent pointer-events-none" />
-
-      {/* ── Branding overlay ── */}
-      <div className="absolute top-8 left-8 flex items-center gap-3 z-10">
-        <div className="w-10 h-10 rounded-2xl bg-white/15 backdrop-blur border border-white/25 flex items-center justify-center shadow-lg">
+      {/* ── Branding ── */}
+      <div className="absolute top-8 left-8 z-20 flex items-center gap-3">
+        <div className="w-10 h-10 rounded-2xl flex items-center justify-center"
+          style={{
+            background: "linear-gradient(135deg, #7c3aed, #4f46e5)",
+            boxShadow: "0 0 20px rgba(124,58,237,0.5)"
+          }}>
           <span className="text-white font-black text-lg">E</span>
         </div>
         <div>
-          <p className="text-white font-black text-lg leading-none">EstateFlow</p>
-          <p className="text-violet-300 text-xs">Real Estate CRM</p>
+          <p className="text-white font-black text-base leading-none">EstateFlow</p>
+          <p className="text-purple-400 text-xs">Real Estate CRM</p>
         </div>
       </div>
 
       {/* ── Bottom tagline ── */}
-      <div className="absolute bottom-12 left-0 right-0 text-center z-10">
-        <p className="text-white/60 text-xs tracking-widest uppercase">
-          India's Smartest Real Estate CRM
+      <div className="absolute bottom-8 left-0 right-0 text-center z-20">
+        <p className="text-white/30 text-xs tracking-[0.2em] uppercase font-medium">
+          Trusted by 500+ agents across India
         </p>
       </div>
 
-      {/* ── CSS Animations ── */}
+      {/* ── Animations ── */}
       <style>{`
-        @keyframes twinkle {
-          0%, 100% { opacity: 0.2; transform: scale(1); }
-          50% { opacity: 1; transform: scale(1.3); }
+        @keyframes orbFloat {
+          0%, 100% { transform: translate(0, 0) scale(1); }
+          33% { transform: translate(30px, -20px) scale(1.05); }
+          66% { transform: translate(-20px, 15px) scale(0.95); }
         }
-        @keyframes float {
+        @keyframes floatY {
           0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-12px); }
+          50% { transform: translateY(-16px); }
         }
-        @keyframes floatCard {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-8px); }
+        @keyframes spinSlow {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
         }
-        @keyframes cloudMove {
-          from { transform: translateX(-120%); }
-          to { transform: translateX(120vw); }
-        }
-        @keyframes buildingRise {
-          from { transform: scaleY(0); transform-origin: bottom; opacity: 0; }
-          to { transform: scaleY(1); transform-origin: bottom; opacity: 1; }
-        }
-        @keyframes windowBlink {
-          0%, 90%, 100% { opacity: 1; }
-          95% { opacity: 0.2; }
-        }
-        @keyframes orbit {
-          from { transform: translate(-50%, -50%) rotate(0deg); }
-          to { transform: translate(-50%, -50%) rotate(360deg); }
-        }
-        @keyframes pulse-glow {
-          0%, 100% { box-shadow: 0 0 8px rgba(139,92,246,0.4); }
-          50% { box-shadow: 0 0 20px rgba(139,92,246,0.8); }
+        @keyframes pulse {
+          0%, 100% { opacity: 0.4; transform: scale(1); }
+          50% { opacity: 1; transform: scale(1.2); }
         }
       `}</style>
     </div>
   );
 }
 
-// ── Building component ────────────────────────────────────────────────────────
-function Building({ height, width, color, windows, cols, delay, glow, accent, tall }) {
-  const rows = Math.ceil(windows / cols);
+// ── Orbiting card around center ───────────────────────────────────────────────
+function OrbitCard({ angle, radius, icon, label, delay }) {
+  const rad = (angle * Math.PI) / 180;
+  const x = Math.cos(rad) * radius;
+  const y = Math.sin(rad) * radius;
 
   return (
     <div
-      className="relative shrink-0 rounded-t-sm"
+      className="absolute flex flex-col items-center gap-1 pointer-events-none"
       style={{
-        height: height + "px",
-        width: width + "px",
-        backgroundColor: color,
-        animation: `buildingRise 0.8s ease forwards`,
-        animationDelay: delay,
-        opacity: 0,
-        boxShadow: glow ? `0 -4px 20px ${accent || "rgba(109,40,217,0.3)"}` : "none",
+        transform: `translate(${x}px, ${y}px)`,
+        animation: `floatY ${4 + angle / 60}s ease-in-out infinite`,
+        animationDelay: `${angle / 120}s`,
       }}
     >
-      {/* Antenna on tall buildings */}
-      {tall && (
-        <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-0.5 h-6 bg-current opacity-60"
-          style={{ backgroundColor: accent || "#8b5cf6" }}>
-          <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full"
-            style={{ backgroundColor: accent || "#8b5cf6", animation: "pulse-glow 2s ease-in-out infinite" }} />
-        </div>
-      )}
-
-      {/* Windows grid */}
-      <div
-        className="absolute inset-x-1 top-2 grid gap-0.5"
-        style={{ gridTemplateColumns: `repeat(${cols}, 1fr)` }}
-      >
-        {[...Array(rows * cols)].map((_, i) => (
-          <div
-            key={i}
-            className="rounded-sm"
-            style={{
-              height: "4px",
-              backgroundColor: Math.random() > 0.3
-                ? (accent || "rgba(167,139,250,0.7)")
-                : "rgba(255,255,255,0.1)",
-              animation: Math.random() > 0.7
-                ? `windowBlink ${Math.random() * 4 + 3}s ease-in-out infinite`
-                : "none",
-              animationDelay: Math.random() * 5 + "s",
-            }}
-          />
-        ))}
+      <div className="w-10 h-10 rounded-2xl flex items-center justify-center text-lg"
+        style={{
+          background: "linear-gradient(135deg, rgba(124,58,237,0.4), rgba(79,70,229,0.3))",
+          backdropFilter: "blur(10px)",
+          border: "1px solid rgba(167,139,250,0.3)",
+          boxShadow: "0 4px 20px rgba(124,58,237,0.2)"
+        }}>
+        {icon}
       </div>
-    </div>
-  );
-}
-
-// ── Cloud component ───────────────────────────────────────────────────────────
-function Cloud({ top, delay, duration, opacity, size }) {
-  return (
-    <div
-      className="absolute pointer-events-none"
-      style={{
-        top,
-        left: "-20%",
-        opacity,
-        transform: `scale(${size})`,
-        animation: `cloudMove ${duration} linear infinite`,
-        animationDelay: delay,
-      }}
-    >
-      <div className="relative">
-        <div className="w-24 h-8 bg-white rounded-full" />
-        <div className="absolute -top-4 left-4 w-14 h-10 bg-white rounded-full" />
-        <div className="absolute -top-2 left-10 w-16 h-8 bg-white rounded-full" />
-      </div>
-    </div>
-  );
-}
-
-// ── Floating notification card ────────────────────────────────────────────────
-function FloatingCard({ style, icon, title, sub, badge, badgeColor }) {
-  return (
-    <div
-      className="absolute z-10 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl px-3 py-2.5 flex items-center gap-2.5 shadow-xl min-w-[160px]"
-      style={{ ...style, animation: "floatCard 4s ease-in-out infinite" }}
-    >
-      <span className="text-xl shrink-0">{icon}</span>
-      <div className="min-w-0">
-        <p className="text-white text-xs font-semibold leading-tight">{title}</p>
-        <p className="text-white/50 text-xs truncate">{sub}</p>
-      </div>
-      <span className={`text-xs font-bold ml-auto shrink-0 ${badgeColor}`}>{badge}</span>
+      <span className="text-white/60 text-[10px] font-medium">{label}</span>
     </div>
   );
 }

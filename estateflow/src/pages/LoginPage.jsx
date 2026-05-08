@@ -22,8 +22,7 @@ export default function LoginPage() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    // Trigger entrance animation
-    const t = setTimeout(() => setMounted(true), 50);
+    const t = setTimeout(() => setMounted(true), 80);
     return () => clearTimeout(t);
   }, []);
 
@@ -68,47 +67,49 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex bg-slate-950 overflow-hidden">
+    <div className="min-h-screen flex bg-[#0a0a0f]">
 
-      {/* ── LEFT PANEL — Animated Illustration ── */}
+      {/* ── LEFT — Animated Illustration ── */}
       <div className="hidden lg:block lg:w-[55%] relative">
-        <AuthIllustration />
+        <AuthIllustration variant="login" />
       </div>
 
-      {/* ── RIGHT PANEL ── */}
-      <div className="flex-1 flex items-center justify-center p-6 bg-slate-950 relative overflow-hidden">
-        {/* Subtle background glow */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-violet-900/20 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-indigo-900/20 rounded-full blur-3xl pointer-events-none" />
+      {/* ── RIGHT — Login Form ── */}
+      <div className="flex-1 flex items-center justify-center p-8 relative overflow-hidden">
 
-        {/* Form card */}
-        <div
-          className={`relative w-full max-w-md transition-all duration-700 ${
-            mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-          }`}
-        >
+        {/* Subtle background glow */}
+        <div className="absolute top-0 right-0 w-80 h-80 rounded-full pointer-events-none"
+          style={{ background: "radial-gradient(circle, rgba(124,58,237,0.08) 0%, transparent 70%)" }} />
+        <div className="absolute bottom-0 left-0 w-60 h-60 rounded-full pointer-events-none"
+          style={{ background: "radial-gradient(circle, rgba(79,70,229,0.06) 0%, transparent 70%)" }} />
+
+        <div className={`relative w-full max-w-[400px] transition-all duration-700 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
+
           {/* Mobile logo */}
-          <div className="flex items-center gap-2.5 mb-8 lg:hidden">
-            <div className="w-9 h-9 rounded-xl bg-violet-600 flex items-center justify-center">
-              <span className="text-white font-bold">E</span>
+          <div className="flex items-center gap-3 mb-10 lg:hidden">
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center"
+              style={{ background: "linear-gradient(135deg, #7c3aed, #4f46e5)" }}>
+              <span className="text-white font-black">E</span>
             </div>
-            <span className="text-white font-bold text-xl">EstateFlow</span>
+            <span className="text-white font-black text-xl">EstateFlow</span>
           </div>
 
           {/* Header */}
           <div className="mb-8">
-            <h2 className="text-3xl font-black text-white mb-2">Welcome back</h2>
-            <p className="text-slate-400">Sign in to your EstateFlow account</p>
+            <p className="text-purple-400 text-sm font-semibold tracking-widest uppercase mb-2">Welcome back</p>
+            <h1 className="text-3xl font-black text-white leading-tight">Sign in to your<br />account</h1>
           </div>
 
           {/* Form */}
-          <form onSubmit={handleSubmit} noValidate className="space-y-5">
+          <form onSubmit={handleSubmit} noValidate className="space-y-4">
 
-            {/* Email field */}
-            <div className="space-y-1.5">
-              <label className="text-sm font-medium text-slate-300">Email address</label>
-              <div className={`relative transition-all duration-200 ${focused === "email" ? "scale-[1.01]" : ""}`}>
-                <HiMail className={`absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors ${focused === "email" ? "text-violet-400" : "text-slate-500"}`} />
+            {/* Email */}
+            <div>
+              <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
+                Email Address
+              </label>
+              <div className="relative">
+                <HiMail className={`absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors duration-200 ${focused === "email" ? "text-purple-400" : "text-slate-600"}`} />
                 <input
                   name="email"
                   type="email"
@@ -118,27 +119,28 @@ export default function LoginPage() {
                   onBlur={() => setFocused("")}
                   placeholder="you@estateflow.com"
                   autoComplete="email"
-                  className={`w-full pl-11 pr-4 py-3.5 rounded-xl text-sm bg-slate-900 border text-white placeholder:text-slate-600 focus:outline-none transition-all duration-200 ${
-                    errors.email
-                      ? "border-red-500 focus:border-red-400 focus:ring-2 focus:ring-red-500/20"
+                  className="w-full pl-11 pr-4 py-3.5 rounded-xl text-sm text-white placeholder:text-slate-600 transition-all duration-200 outline-none"
+                  style={{
+                    background: "rgba(255,255,255,0.04)",
+                    border: errors.email
+                      ? "1px solid rgba(239,68,68,0.6)"
                       : focused === "email"
-                      ? "border-violet-500 ring-2 ring-violet-500/20"
-                      : "border-slate-800 hover:border-slate-700"
-                  }`}
+                      ? "1px solid rgba(167,139,250,0.6)"
+                      : "1px solid rgba(255,255,255,0.08)",
+                    boxShadow: focused === "email" ? "0 0 0 3px rgba(124,58,237,0.1)" : "none"
+                  }}
                 />
               </div>
-              {errors.email && (
-                <p className="text-xs text-red-400 flex items-center gap-1">
-                  <span>⚠</span> {errors.email}
-                </p>
-              )}
+              {errors.email && <p className="text-red-400 text-xs mt-1.5 flex items-center gap-1"><span>⚠</span>{errors.email}</p>}
             </div>
 
-            {/* Password field */}
-            <div className="space-y-1.5">
-              <label className="text-sm font-medium text-slate-300">Password</label>
-              <div className={`relative transition-all duration-200 ${focused === "password" ? "scale-[1.01]" : ""}`}>
-                <HiLockClosed className={`absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors ${focused === "password" ? "text-violet-400" : "text-slate-500"}`} />
+            {/* Password */}
+            <div>
+              <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
+                Password
+              </label>
+              <div className="relative">
+                <HiLockClosed className={`absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors duration-200 ${focused === "password" ? "text-purple-400" : "text-slate-600"}`} />
                 <input
                   name="password"
                   type={showPassword ? "text" : "password"}
@@ -148,79 +150,60 @@ export default function LoginPage() {
                   onBlur={() => setFocused("")}
                   placeholder="••••••••"
                   autoComplete="current-password"
-                  className={`w-full pl-11 pr-12 py-3.5 rounded-xl text-sm bg-slate-900 border text-white placeholder:text-slate-600 focus:outline-none transition-all duration-200 ${
-                    errors.password
-                      ? "border-red-500 focus:border-red-400 focus:ring-2 focus:ring-red-500/20"
+                  className="w-full pl-11 pr-12 py-3.5 rounded-xl text-sm text-white placeholder:text-slate-600 transition-all duration-200 outline-none"
+                  style={{
+                    background: "rgba(255,255,255,0.04)",
+                    border: errors.password
+                      ? "1px solid rgba(239,68,68,0.6)"
                       : focused === "password"
-                      ? "border-violet-500 ring-2 ring-violet-500/20"
-                      : "border-slate-800 hover:border-slate-700"
-                  }`}
+                      ? "1px solid rgba(167,139,250,0.6)"
+                      : "1px solid rgba(255,255,255,0.08)",
+                    boxShadow: focused === "password" ? "0 0 0 3px rgba(124,58,237,0.1)" : "none"
+                  }}
                 />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword((p) => !p)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors"
-                >
+                <button type="button" onClick={() => setShowPassword(p => !p)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-600 hover:text-slate-300 transition-colors">
                   {showPassword ? <HiEyeOff className="w-4 h-4" /> : <HiEye className="w-4 h-4" />}
                 </button>
               </div>
-              {errors.password && (
-                <p className="text-xs text-red-400 flex items-center gap-1">
-                  <span>⚠</span> {errors.password}
-                </p>
-              )}
+              {errors.password && <p className="text-red-400 text-xs mt-1.5 flex items-center gap-1"><span>⚠</span>{errors.password}</p>}
             </div>
 
             {/* Remember + Forgot */}
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between pt-1">
               <label className="flex items-center gap-2.5 cursor-pointer group">
-                <div className="relative">
-                  <input
-                    type="checkbox"
-                    name="remember"
-                    checked={form.remember}
-                    onChange={handleChange}
-                    className="sr-only"
-                  />
-                  <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${
-                    form.remember ? "bg-violet-600 border-violet-600" : "border-slate-600 bg-transparent"
-                  }`}>
-                    {form.remember && <span className="text-white text-xs font-bold">✓</span>}
-                  </div>
-                </div>
-                <span className="text-sm text-slate-400 group-hover:text-slate-300 transition-colors">Remember me</span>
+                <button type="button" onClick={() => setForm(p => ({ ...p, remember: !p.remember }))}
+                  className="w-5 h-5 rounded-md flex items-center justify-center transition-all duration-200 shrink-0"
+                  style={{
+                    background: form.remember ? "linear-gradient(135deg, #7c3aed, #4f46e5)" : "rgba(255,255,255,0.05)",
+                    border: form.remember ? "none" : "1px solid rgba(255,255,255,0.1)"
+                  }}>
+                  {form.remember && <span className="text-white text-xs font-bold">✓</span>}
+                </button>
+                <span className="text-sm text-slate-500 group-hover:text-slate-300 transition-colors">Remember me</span>
               </label>
-              <Link
-                to="/forgot-password"
-                className="text-sm text-violet-400 hover:text-violet-300 font-medium transition-colors"
-              >
+              <Link to="/forgot-password" className="text-sm text-purple-400 hover:text-purple-300 font-medium transition-colors">
                 Forgot password?
               </Link>
             </div>
 
-            {/* Submit button */}
+            {/* Submit */}
             <button
               type="submit"
               disabled={loading}
-              className="w-full relative overflow-hidden group bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-semibold py-3.5 rounded-xl transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed shadow-lg shadow-violet-900/40 hover:shadow-violet-900/60 hover:scale-[1.01] active:scale-[0.99]"
+              className="w-full relative overflow-hidden group py-3.5 rounded-xl font-semibold text-white text-sm transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed mt-2"
+              style={{
+                background: "linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%)",
+                boxShadow: "0 0 30px rgba(124,58,237,0.35)"
+              }}
             >
-              {/* Shimmer effect */}
-              <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
-
+              {/* Shimmer */}
+              <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/15 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
               <span className="relative flex items-center justify-center gap-2">
                 {loading ? (
-                  <>
-                    <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                    </svg>
-                    Signing in...
-                  </>
+                  <><svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>Signing in...</>
                 ) : (
-                  <>
-                    Sign In
-                    <HiArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                  </>
+                  <>Sign In <HiArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" /></>
                 )}
               </span>
             </button>
@@ -228,30 +211,24 @@ export default function LoginPage() {
 
           {/* Divider */}
           <div className="flex items-center gap-3 my-6">
-            <div className="flex-1 h-px bg-slate-800" />
-            <span className="text-xs text-slate-600">or</span>
-            <div className="flex-1 h-px bg-slate-800" />
+            <div className="flex-1 h-px" style={{ background: "rgba(255,255,255,0.06)" }} />
+            <span className="text-xs text-slate-700">or</span>
+            <div className="flex-1 h-px" style={{ background: "rgba(255,255,255,0.06)" }} />
           </div>
 
-          {/* Sign up link */}
-          <p className="text-center text-sm text-slate-500">
+          {/* Sign up */}
+          <p className="text-center text-sm text-slate-600">
             Don't have an account?{" "}
-            <Link
-              to="/signup"
-              className="text-violet-400 hover:text-violet-300 font-semibold transition-colors"
-            >
+            <Link to="/signup" className="text-purple-400 hover:text-purple-300 font-semibold transition-colors">
               Create one free →
             </Link>
           </p>
 
-          {/* Security note */}
-          <p className="text-center text-xs text-slate-700 mt-6 flex items-center justify-center gap-1.5">
-            <span>🔒</span>
-            Secured with Firebase Authentication
+          <p className="text-center text-xs text-slate-800 mt-5 flex items-center justify-center gap-1.5">
+            🔒 Secured with Firebase Authentication
           </p>
         </div>
       </div>
-
     </div>
   );
 }
