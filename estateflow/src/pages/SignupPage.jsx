@@ -5,6 +5,13 @@ import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
 import { validateEmail } from "../utils/validators";
 
+// Different set of images for signup — interior/luxury feel
+const BG_IMAGES = [
+  "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=1920&q=85",
+  "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=1920&q=85",
+  "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1920&q=85",
+];
+
 function getPasswordStrength(password) {
   if (!password) return { score: 0, label: "", color: "" };
   let score = 0;
@@ -32,12 +39,14 @@ export default function SignupPage() {
   const [focused, setFocused] = useState("");
   const [mounted, setMounted] = useState(false);
   const [step, setStep] = useState(1);
+  const [bgIndex, setBgIndex] = useState(0);
 
   const strength = getPasswordStrength(form.password);
 
   useEffect(() => {
     const t = setTimeout(() => setMounted(true), 100);
-    return () => clearTimeout(t);
+    const interval = setInterval(() => setBgIndex(i => (i + 1) % BG_IMAGES.length), 6000);
+    return () => { clearTimeout(t); clearInterval(interval); };
   }, []);
 
   function handleChange(e) {
@@ -64,7 +73,6 @@ export default function SignupPage() {
     if (!form.confirm) errs.confirm = "Please confirm your password";
     else if (form.confirm !== form.password) errs.confirm = "Passwords do not match";
     if (Object.keys(errs).length > 0) { setErrors(errs); return; }
-
     setLoading(true);
     try {
       await signup(form.name, form.email, form.password, "agent");
@@ -82,11 +90,10 @@ export default function SignupPage() {
     }
   }
 
-  // Shared input style
   const inputStyle = (field) => ({
-    background: "rgba(255,255,255,0.07)",
-    border: errors[field] ? "1px solid rgba(239,68,68,0.7)" : focused === field ? "1px solid rgba(167,139,250,0.7)" : "1px solid rgba(255,255,255,0.1)",
-    boxShadow: focused === field ? "0 0 0 3px rgba(124,58,237,0.15), inset 0 1px 0 rgba(255,255,255,0.05)" : "inset 0 1px 0 rgba(255,255,255,0.05)",
+    background: "rgba(255,255,255,0.06)",
+    border: errors[field] ? "1px solid rgba(239,68,68,0.7)" : focused === field ? "1px solid rgba(52,211,153,0.6)" : "1px solid rgba(255,255,255,0.1)",
+    boxShadow: focused === field ? "0 0 0 3px rgba(16,185,129,0.12)" : "none",
   });
 
   const inputClass = "w-full pl-11 pr-4 py-3.5 rounded-xl text-sm text-white placeholder:text-white/20 outline-none transition-all duration-200";
@@ -94,71 +101,77 @@ export default function SignupPage() {
   return (
     <div className="relative min-h-screen w-full overflow-hidden flex items-center justify-center py-8">
 
-      {/* ── Full page background — teal/emerald theme for signup ── */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#0d1117] via-[#0f2027] to-[#203a43]" />
+      {/* ── Background images with crossfade ── */}
+      {BG_IMAGES.map((src, i) => (
+        <div key={src} className="absolute inset-0 transition-opacity duration-2000"
+          style={{ opacity: i === bgIndex ? 1 : 0, transitionDuration: "2000ms" }}>
+          <img src={src} alt="" className="w-full h-full object-cover" />
+        </div>
+      ))}
 
-      {/* Aurora blobs — different colors from login */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="aurora-blob"
-          style={{ width: "65vw", height: "65vw", top: "-15%", right: "-10%",
-            background: "radial-gradient(circle, rgba(16,185,129,0.35) 0%, transparent 65%)",
-            animation: "auroraMove1 14s ease-in-out infinite" }} />
-        <div className="aurora-blob"
-          style={{ width: "55vw", height: "55vw", bottom: "-20%", left: "-10%",
-            background: "radial-gradient(circle, rgba(59,130,246,0.35) 0%, transparent 65%)",
-            animation: "auroraMove2 16s ease-in-out infinite" }} />
-        <div className="aurora-blob"
-          style={{ width: "45vw", height: "45vw", top: "40%", left: "30%",
-            background: "radial-gradient(circle, rgba(124,58,237,0.25) 0%, transparent 65%)",
-            animation: "auroraMove3 20s ease-in-out infinite" }} />
-        <div className="aurora-blob"
-          style={{ width: "35vw", height: "35vw", top: "10%", left: "10%",
-            background: "radial-gradient(circle, rgba(6,182,212,0.2) 0%, transparent 65%)",
-            animation: "auroraMove1 22s ease-in-out infinite reverse" }} />
-      </div>
-
-      {/* Grid */}
-      <div className="absolute inset-0 opacity-[0.05]"
+      {/* ── Design overlays ── */}
+      <div className="absolute inset-0 bg-gradient-to-br from-black/80 via-emerald-950/50 to-black/80" />
+      <div className="absolute inset-0 pointer-events-none"
+        style={{ background: "radial-gradient(ellipse 60% 60% at 50% 50%, rgba(5,150,105,0.15) 0%, transparent 70%)" }} />
+      <div className="absolute inset-0 pointer-events-none opacity-[0.05]"
         style={{
           backgroundImage: "linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)",
-          backgroundSize: "80px 80px",
+          backgroundSize: "70px 70px",
         }}
       />
+      <div className="absolute inset-0 pointer-events-none"
+        style={{ background: "radial-gradient(ellipse 100% 100% at 50% 50%, transparent 50%, rgba(0,0,0,0.55) 100%)" }} />
 
       {/* Particles */}
-      {[...Array(18)].map((_, i) => (
+      {[...Array(14)].map((_, i) => (
         <div key={i} className="absolute rounded-full pointer-events-none"
           style={{
-            width: Math.random() * 4 + 2 + "px",
-            height: Math.random() * 4 + 2 + "px",
+            width: Math.random() * 3 + 2 + "px",
+            height: Math.random() * 3 + 2 + "px",
             top: Math.random() * 100 + "%",
             left: Math.random() * 100 + "%",
-            background: ["#6ee7b7", "#93c5fd", "#a78bfa", "#67e8f9"][Math.floor(Math.random() * 4)],
+            background: ["#6ee7b7", "#93c5fd", "#a78bfa", "#fde68a"][i % 4],
             opacity: Math.random() * 0.5 + 0.2,
-            animation: `particleFloat ${Math.random() * 8 + 6}s ease-in-out infinite`,
-            animationDelay: Math.random() * 5 + "s",
+            animation: `particleFloat ${Math.random() * 8 + 5}s ease-in-out infinite`,
+            animationDelay: Math.random() * 4 + "s",
           }}
         />
       ))}
 
+      {/* Bottom bar */}
+      <div className="absolute bottom-0 left-0 right-0 px-8 py-5 flex items-center justify-between pointer-events-none"
+        style={{ background: "linear-gradient(to top, rgba(0,0,0,0.7), transparent)" }}>
+        <p className="text-white/40 text-xs">Agent accounts only · Admin creates Manager/Admin accounts</p>
+        <div className="flex gap-1.5">
+          {BG_IMAGES.map((_, i) => (
+            <div key={i} className="w-1.5 h-1.5 rounded-full transition-all duration-500"
+              style={{ background: i === bgIndex ? "white" : "rgba(255,255,255,0.3)" }} />
+          ))}
+        </div>
+      </div>
+
       {/* ── Glass card ── */}
-      <div className={`relative z-10 w-full max-w-md mx-4 transition-all duration-700 ${mounted ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-8 scale-95"}`}>
-        <div className="rounded-3xl p-8 backdrop-blur-2xl"
+      <div className={`relative z-10 w-full max-w-[420px] mx-4 transition-all duration-700 ${
+        mounted ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-8 scale-95"
+      }`}>
+        <div className="rounded-3xl p-8"
           style={{
-            background: "rgba(255,255,255,0.06)",
+            background: "rgba(10,10,20,0.65)",
+            backdropFilter: "blur(24px)",
+            WebkitBackdropFilter: "blur(24px)",
             border: "1px solid rgba(255,255,255,0.12)",
-            boxShadow: "0 25px 80px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1)",
-          }}
-        >
+            boxShadow: "0 30px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05) inset, 0 1px 0 rgba(255,255,255,0.1) inset",
+          }}>
+
           {/* Logo */}
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-11 h-11 rounded-2xl flex items-center justify-center shadow-lg"
-              style={{ background: "linear-gradient(135deg, #059669, #0891b2)", boxShadow: "0 0 20px rgba(5,150,105,0.5)" }}>
+            <div className="w-11 h-11 rounded-2xl flex items-center justify-center"
+              style={{ background: "linear-gradient(135deg, #059669, #0891b2)", boxShadow: "0 0 24px rgba(5,150,105,0.5)" }}>
               <span className="text-white font-black text-lg">E</span>
             </div>
             <div>
-              <p className="text-white font-black text-lg leading-none">EstateFlow</p>
-              <p className="text-emerald-300 text-xs opacity-70">Real Estate CRM</p>
+              <p className="text-white font-black text-lg leading-none tracking-tight">EstateFlow</p>
+              <p className="text-emerald-300/70 text-xs">Real Estate CRM</p>
             </div>
           </div>
 
@@ -168,7 +181,7 @@ export default function SignupPage() {
               <div key={s} className="flex items-center gap-2">
                 <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-300"
                   style={{
-                    background: step >= s ? "linear-gradient(135deg, #059669, #0891b2)" : "rgba(255,255,255,0.08)",
+                    background: step >= s ? "linear-gradient(135deg, #059669, #0891b2)" : "rgba(255,255,255,0.07)",
                     border: step >= s ? "none" : "1px solid rgba(255,255,255,0.12)",
                     color: step >= s ? "white" : "rgba(255,255,255,0.3)",
                     boxShadow: step >= s ? "0 0 12px rgba(5,150,105,0.4)" : "none",
@@ -188,7 +201,7 @@ export default function SignupPage() {
 
           {/* Heading */}
           <div className="mb-6">
-            <h1 className="text-3xl font-black text-white mb-1">
+            <h1 className="text-3xl font-black text-white mb-1.5 leading-tight">
               {step === 1 ? "Create account ✨" : "Set password 🔐"}
             </h1>
             <p className="text-white/40 text-sm">
@@ -200,9 +213,9 @@ export default function SignupPage() {
           {step === 1 && (
             <form onSubmit={handleNext} noValidate className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-white/40 uppercase tracking-widest mb-2">Full Name</label>
+                <label className="block text-[11px] font-bold text-white/40 uppercase tracking-[0.15em] mb-2">Full Name</label>
                 <div className="relative">
-                  <HiUser className={`absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors ${focused === "name" ? "text-emerald-300" : "text-white/25"}`} />
+                  <HiUser className={`absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors ${focused === "name" ? "text-emerald-400" : "text-white/25"}`} />
                   <input name="name" type="text" value={form.name} onChange={handleChange}
                     onFocus={() => setFocused("name")} onBlur={() => setFocused("")}
                     placeholder="Himanshu Sharma" autoComplete="name"
@@ -212,9 +225,9 @@ export default function SignupPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-white/40 uppercase tracking-widest mb-2">Email Address</label>
+                <label className="block text-[11px] font-bold text-white/40 uppercase tracking-[0.15em] mb-2">Email Address</label>
                 <div className="relative">
-                  <HiMail className={`absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors ${focused === "email" ? "text-emerald-300" : "text-white/25"}`} />
+                  <HiMail className={`absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors ${focused === "email" ? "text-emerald-400" : "text-white/25"}`} />
                   <input name="email" type="email" value={form.email} onChange={handleChange}
                     onFocus={() => setFocused("email")} onBlur={() => setFocused("")}
                     placeholder="you@company.com" autoComplete="email"
@@ -225,7 +238,7 @@ export default function SignupPage() {
 
               <button type="submit"
                 className="w-full relative overflow-hidden group py-3.5 rounded-xl font-bold text-white text-sm transition-all duration-300 mt-2"
-                style={{ background: "linear-gradient(135deg, #059669, #0891b2)", boxShadow: "0 0 40px rgba(5,150,105,0.4)" }}>
+                style={{ background: "linear-gradient(135deg, #059669, #0891b2)", boxShadow: "0 0 40px rgba(5,150,105,0.4), 0 4px 20px rgba(0,0,0,0.3)" }}>
                 <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
                 <span className="relative flex items-center justify-center gap-2">
                   Continue <HiArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -238,9 +251,9 @@ export default function SignupPage() {
           {step === 2 && (
             <form onSubmit={handleSubmit} noValidate className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-white/40 uppercase tracking-widest mb-2">Password</label>
+                <label className="block text-[11px] font-bold text-white/40 uppercase tracking-[0.15em] mb-2">Password</label>
                 <div className="relative">
-                  <HiLockClosed className={`absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors ${focused === "password" ? "text-emerald-300" : "text-white/25"}`} />
+                  <HiLockClosed className={`absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors ${focused === "password" ? "text-emerald-400" : "text-white/25"}`} />
                   <input name="password" type={showPassword ? "text" : "password"} value={form.password}
                     onChange={handleChange} onFocus={() => setFocused("password")} onBlur={() => setFocused("")}
                     placeholder="Min. 6 characters"
@@ -265,9 +278,9 @@ export default function SignupPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-white/40 uppercase tracking-widest mb-2">Confirm Password</label>
+                <label className="block text-[11px] font-bold text-white/40 uppercase tracking-[0.15em] mb-2">Confirm Password</label>
                 <div className="relative">
-                  <HiLockClosed className={`absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors ${focused === "confirm" ? "text-emerald-300" : "text-white/25"}`} />
+                  <HiLockClosed className={`absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors ${focused === "confirm" ? "text-emerald-400" : "text-white/25"}`} />
                   <input name="confirm" type={showConfirm ? "text" : "password"} value={form.confirm}
                     onChange={handleChange} onFocus={() => setFocused("confirm")} onBlur={() => setFocused("")}
                     placeholder="Repeat your password"
@@ -293,7 +306,7 @@ export default function SignupPage() {
                 </button>
                 <button type="submit" disabled={loading}
                   className="flex-1 relative overflow-hidden group py-3.5 rounded-xl font-bold text-white text-sm transition-all duration-300 disabled:opacity-50"
-                  style={{ background: "linear-gradient(135deg, #059669, #0891b2)", boxShadow: "0 0 40px rgba(5,150,105,0.4)" }}>
+                  style={{ background: "linear-gradient(135deg, #059669, #0891b2)", boxShadow: "0 0 40px rgba(5,150,105,0.4), 0 4px 20px rgba(0,0,0,0.3)" }}>
                   <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
                   <span className="relative flex items-center justify-center gap-2">
                     {loading ? (
@@ -322,36 +335,16 @@ export default function SignupPage() {
           </p>
         </div>
 
-        <p className="text-center text-xs text-white/20 mt-5 flex items-center justify-center gap-1.5">
+        <p className="text-center text-xs text-white/20 mt-4 flex items-center justify-center gap-1.5">
           🔒 Secured with Firebase Authentication
         </p>
       </div>
 
       <style>{`
-        .aurora-blob {
-          position: absolute;
-          border-radius: 50%;
-          filter: blur(80px);
-          pointer-events: none;
-        }
-        @keyframes auroraMove1 {
-          0%, 100% { transform: translate(0, 0) scale(1); }
-          33% { transform: translate(5vw, -5vh) scale(1.1); }
-          66% { transform: translate(-3vw, 4vh) scale(0.95); }
-        }
-        @keyframes auroraMove2 {
-          0%, 100% { transform: translate(0, 0) scale(1); }
-          33% { transform: translate(-6vw, 4vh) scale(1.05); }
-          66% { transform: translate(4vw, -6vh) scale(1.1); }
-        }
-        @keyframes auroraMove3 {
-          0%, 100% { transform: translate(0, 0) scale(1); }
-          50% { transform: translate(-4vw, -4vh) scale(1.15); }
-        }
         @keyframes particleFloat {
           0%, 100% { transform: translateY(0px) translateX(0px); opacity: 0.3; }
-          25% { transform: translateY(-20px) translateX(10px); opacity: 0.8; }
-          75% { transform: translateY(10px) translateX(-8px); opacity: 0.5; }
+          25% { transform: translateY(-18px) translateX(8px); opacity: 0.7; }
+          75% { transform: translateY(8px) translateX(-6px); opacity: 0.4; }
         }
       `}</style>
     </div>
