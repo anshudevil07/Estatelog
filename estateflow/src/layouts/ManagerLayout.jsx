@@ -4,6 +4,7 @@ import {
   HiViewGrid, HiOfficeBuilding, HiUsers, HiUserGroup,
   HiChartBar, HiCog, HiX, HiChevronLeft, HiChevronRight,
   HiBriefcase, HiLogout, HiViewBoards, HiBell, HiCalendar, HiUserCircle,
+  HiTrendingUp, HiCurrencyRupee, HiClipboardList,
 } from "react-icons/hi";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
@@ -20,6 +21,10 @@ const managerNav = [
   { path: "/manager/reminders", label: "Reminders", icon: <HiBell className="w-5 h-5" /> },
   { path: "/manager/agents", label: "Agents", icon: <HiUserGroup className="w-5 h-5" /> },
   { path: "/manager/analytics", label: "Analytics", icon: <HiChartBar className="w-5 h-5" /> },
+  { path: "/manager/agent-report", label: "Agent Report", icon: <HiTrendingUp className="w-5 h-5" /> },
+  { path: "/manager/property-report", label: "Property Report", icon: <HiOfficeBuilding className="w-5 h-5" /> },
+  { path: "/manager/commissions", label: "Commissions", icon: <HiCurrencyRupee className="w-5 h-5" /> },
+  { path: "/manager/activity-log", label: "Activity Log", icon: <HiClipboardList className="w-5 h-5" /> },
   { path: "/manager/settings", label: "Settings", icon: <HiCog className="w-5 h-5" /> },
 ];
 

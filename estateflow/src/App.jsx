@@ -27,6 +27,10 @@ import PipelinePage from "./pages/PipelinePage";
 import RemindersPage from "./pages/RemindersPage";
 import ClientsPage from "./pages/ClientsPage";
 import VisitsPage from "./pages/VisitsPage";
+import AgentReportPage from "./pages/AgentReportPage";
+import PropertyReportPage from "./pages/PropertyReportPage";
+import CommissionPage from "./pages/CommissionPage";
+import ActivityLogPage from "./pages/ActivityLogPage";
 
 // Manager pages (reuse same components — role controls what they see)
 import ManagerDashboard from "./pages/manager/ManagerDashboard";
@@ -73,6 +77,10 @@ export default function App() {
                 <Route path="reminders" element={<RemindersPage />} />
                 <Route path="clients" element={<ClientsPage />} />
                 <Route path="visits" element={<VisitsPage />} />
+                <Route path="agent-report" element={<AgentReportPage />} />
+                <Route path="property-report" element={<PropertyReportPage />} />
+                <Route path="commissions" element={<CommissionPage />} />
+                <Route path="activity-log" element={<ActivityLogPage />} />
                 <Route path="settings" element={<SettingsPage />} />
               </Route>
 
@@ -97,6 +105,10 @@ export default function App() {
                 <Route path="reminders" element={<RemindersPage />} />
                 <Route path="clients" element={<ClientsPage />} />
                 <Route path="visits" element={<VisitsPage />} />
+                <Route path="agent-report" element={<AgentReportPage />} />
+                <Route path="property-report" element={<PropertyReportPage />} />
+                <Route path="commissions" element={<CommissionPage />} />
+                <Route path="activity-log" element={<ActivityLogPage />} />
                 <Route path="settings" element={<SettingsPage />} />
               </Route>
 
