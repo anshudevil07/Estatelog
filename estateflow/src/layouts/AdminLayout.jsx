@@ -4,7 +4,7 @@ import {
   HiViewGrid, HiOfficeBuilding, HiUsers, HiUserGroup,
   HiChartBar, HiCog, HiX, HiChevronLeft, HiChevronRight,
   HiShieldCheck, HiLogout, HiViewBoards, HiBell, HiCalendar, HiUserCircle,
-  HiTrendingUp, HiCurrencyRupee, HiClipboardList, HiDownload,
+  HiClipboardList, HiDownload,
 } from "react-icons/hi";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
@@ -22,9 +22,7 @@ const adminNav = [
   { path: "/admin/reminders", label: "Reminders", icon: <HiBell className="w-5 h-5" /> },
   { path: "/admin/agents", label: "Agents", icon: <HiUserGroup className="w-5 h-5" /> },
   { path: "/admin/analytics", label: "Analytics", icon: <HiChartBar className="w-5 h-5" /> },
-  { path: "/admin/agent-report", label: "Agent Report", icon: <HiTrendingUp className="w-5 h-5" /> },
   { path: "/admin/property-report", label: "Property Report", icon: <HiOfficeBuilding className="w-5 h-5" /> },
-  { path: "/admin/commissions", label: "Commissions", icon: <HiCurrencyRupee className="w-5 h-5" /> },
   { path: "/admin/activity-log", label: "Activity Log", icon: <HiClipboardList className="w-5 h-5" /> },
   { path: "/admin/export-import", label: "Export / Import", icon: <HiDownload className="w-5 h-5" /> },
   { path: "/admin/settings", label: "Settings", icon: <HiCog className="w-5 h-5" /> },
