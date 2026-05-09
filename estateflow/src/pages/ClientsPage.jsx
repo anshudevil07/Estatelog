@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { HiPlus, HiPencil, HiTrash, HiEye, HiMail, HiPhone, HiUser } from "react-icons/hi";
 import { clientService } from "../firebase/clientService";
 import { useAuth } from "../context/AuthContext";
@@ -18,6 +19,7 @@ const CLIENT_TYPES = ["All", "Buyer", "Seller", "Investor", "Tenant"];
 export default function ClientsPage() {
   const { user, isAgent } = useAuth();
   const toast = useToast();
+  const navigate = useNavigate();
 
   const [clients, setClients] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -143,7 +145,13 @@ export default function ClientsPage() {
                   </div>
                 </div>
                 <div className="flex gap-1">
-                  <button onClick={() => setDetailClient(client)} className="p-1.5 rounded-lg text-slate-400 hover:text-violet-600 hover:bg-violet-50 dark:hover:bg-violet-900/20 transition-colors"><HiEye className="w-4 h-4" /></button>
+                  <button
+                    onClick={() => navigate(`/${user?.role}/clients/${client.id}`)}
+                    className="p-1.5 rounded-lg text-slate-400 hover:text-violet-600 hover:bg-violet-50 dark:hover:bg-violet-900/20 transition-colors"
+                    title="View full profile"
+                  >
+                    <HiEye className="w-4 h-4" />
+                  </button>
                   <button onClick={() => setEditClient(client)} className="p-1.5 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors"><HiPencil className="w-4 h-4" /></button>
                   <button onClick={() => setDeleteTarget(client)} className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"><HiTrash className="w-4 h-4" /></button>
                 </div>

@@ -33,6 +33,7 @@ import PropertyReportPage from "./pages/PropertyReportPage";
 import CommissionPage from "./pages/CommissionPage";
 import ActivityLogPage from "./pages/ActivityLogPage";
 import ExportImportPage from "./pages/ExportImportPage";
+import ClientProfilePage from "./pages/ClientProfilePage";
 
 // Manager pages (reuse same components — role controls what they see)
 import ManagerDashboard from "./pages/manager/ManagerDashboard";
@@ -79,6 +80,7 @@ export default function App() {
                 <Route path="pipeline" element={<PipelinePage />} />
                 <Route path="reminders" element={<RemindersPage />} />
                 <Route path="clients" element={<ClientsPage />} />
+                <Route path="clients/:clientId" element={<ClientProfilePage />} />
                 <Route path="visits" element={<VisitsPage />} />
                 <Route path="agent-report" element={<AgentReportPage />} />
                 <Route path="property-report" element={<PropertyReportPage />} />
@@ -108,6 +110,7 @@ export default function App() {
                 <Route path="pipeline" element={<PipelinePage />} />
                 <Route path="reminders" element={<RemindersPage />} />
                 <Route path="clients" element={<ClientsPage />} />
+                <Route path="clients/:clientId" element={<ClientProfilePage />} />
                 <Route path="visits" element={<VisitsPage />} />
                 <Route path="agent-report" element={<AgentReportPage />} />
                 <Route path="property-report" element={<PropertyReportPage />} />
@@ -135,6 +138,7 @@ export default function App() {
                 <Route path="pipeline" element={<PipelinePage />} />
                 <Route path="reminders" element={<RemindersPage />} />
                 <Route path="clients" element={<ClientsPage />} />
+                <Route path="clients/:clientId" element={<ClientProfilePage />} />
                 <Route path="visits" element={<VisitsPage />} />
                 <Route path="export-import" element={<ExportImportPage />} />
                 <Route path="settings" element={<SettingsPage />} />
