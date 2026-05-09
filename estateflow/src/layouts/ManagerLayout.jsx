@@ -3,7 +3,7 @@ import { Outlet, NavLink, useNavigate } from "react-router-dom";
 import {
   HiViewGrid, HiOfficeBuilding, HiUsers, HiUserGroup,
   HiChartBar, HiCog, HiX, HiChevronLeft, HiChevronRight,
-  HiBriefcase, HiLogout, HiMenu,
+  HiBriefcase, HiLogout, HiViewBoards, HiBell, HiCalendar, HiUserCircle,
 } from "react-icons/hi";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
@@ -14,6 +14,10 @@ const managerNav = [
   { path: "/manager/dashboard", label: "Dashboard", icon: <HiViewGrid className="w-5 h-5" /> },
   { path: "/manager/properties", label: "Properties", icon: <HiOfficeBuilding className="w-5 h-5" /> },
   { path: "/manager/leads", label: "Leads", icon: <HiUsers className="w-5 h-5" /> },
+  { path: "/manager/clients", label: "Clients", icon: <HiUserCircle className="w-5 h-5" /> },
+  { path: "/manager/pipeline", label: "Pipeline", icon: <HiViewBoards className="w-5 h-5" /> },
+  { path: "/manager/visits", label: "Site Visits", icon: <HiCalendar className="w-5 h-5" /> },
+  { path: "/manager/reminders", label: "Reminders", icon: <HiBell className="w-5 h-5" /> },
   { path: "/manager/agents", label: "Agents", icon: <HiUserGroup className="w-5 h-5" /> },
   { path: "/manager/analytics", label: "Analytics", icon: <HiChartBar className="w-5 h-5" /> },
   { path: "/manager/settings", label: "Settings", icon: <HiCog className="w-5 h-5" /> },

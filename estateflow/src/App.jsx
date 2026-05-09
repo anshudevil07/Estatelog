@@ -23,6 +23,10 @@ import LeadsPage from "./pages/LeadsPage";
 import AgentsPage from "./pages/AgentsPage";
 import AnalyticsPage from "./pages/AnalyticsPage";
 import SettingsPage from "./pages/SettingsPage";
+import PipelinePage from "./pages/PipelinePage";
+import RemindersPage from "./pages/RemindersPage";
+import ClientsPage from "./pages/ClientsPage";
+import VisitsPage from "./pages/VisitsPage";
 
 // Manager pages (reuse same components — role controls what they see)
 import ManagerDashboard from "./pages/manager/ManagerDashboard";
@@ -65,6 +69,10 @@ export default function App() {
                 <Route path="agents" element={<AgentsPage />} />
                 <Route path="agents/add" element={<AddTeamMember />} />
                 <Route path="analytics" element={<AnalyticsPage />} />
+                <Route path="pipeline" element={<PipelinePage />} />
+                <Route path="reminders" element={<RemindersPage />} />
+                <Route path="clients" element={<ClientsPage />} />
+                <Route path="visits" element={<VisitsPage />} />
                 <Route path="settings" element={<SettingsPage />} />
               </Route>
 
@@ -85,6 +93,10 @@ export default function App() {
                 <Route path="leads" element={<LeadsPage />} />
                 <Route path="agents" element={<AgentsPage />} />
                 <Route path="analytics" element={<AnalyticsPage />} />
+                <Route path="pipeline" element={<PipelinePage />} />
+                <Route path="reminders" element={<RemindersPage />} />
+                <Route path="clients" element={<ClientsPage />} />
+                <Route path="visits" element={<VisitsPage />} />
                 <Route path="settings" element={<SettingsPage />} />
               </Route>
 
@@ -103,6 +115,10 @@ export default function App() {
                 <Route path="dashboard" element={<AgentDashboard />} />
                 <Route path="leads" element={<LeadsPage />} />
                 <Route path="properties" element={<PropertiesPage />} />
+                <Route path="pipeline" element={<PipelinePage />} />
+                <Route path="reminders" element={<RemindersPage />} />
+                <Route path="clients" element={<ClientsPage />} />
+                <Route path="visits" element={<VisitsPage />} />
                 <Route path="settings" element={<SettingsPage />} />
               </Route>
 

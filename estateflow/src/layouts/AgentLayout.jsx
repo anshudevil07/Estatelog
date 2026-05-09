@@ -3,17 +3,20 @@ import { Outlet, NavLink, useNavigate } from "react-router-dom";
 import {
   HiViewGrid, HiUsers, HiOfficeBuilding,
   HiCog, HiX, HiChevronLeft, HiChevronRight,
-  HiUserCircle, HiLogout,
+  HiUserCircle, HiLogout, HiViewBoards, HiBell, HiCalendar,
 } from "react-icons/hi";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
 import { getInitials } from "../utils/formatters";
 import Navbar from "../components/common/Navbar";
 
-// Agents have limited navigation — only their own data
 const agentNav = [
   { path: "/agent/dashboard", label: "My Dashboard", icon: <HiViewGrid className="w-5 h-5" /> },
   { path: "/agent/leads", label: "My Leads", icon: <HiUsers className="w-5 h-5" /> },
+  { path: "/agent/clients", label: "My Clients", icon: <HiUserCircle className="w-5 h-5" /> },
+  { path: "/agent/pipeline", label: "My Pipeline", icon: <HiViewBoards className="w-5 h-5" /> },
+  { path: "/agent/visits", label: "Site Visits", icon: <HiCalendar className="w-5 h-5" /> },
+  { path: "/agent/reminders", label: "Reminders", icon: <HiBell className="w-5 h-5" /> },
   { path: "/agent/properties", label: "Properties", icon: <HiOfficeBuilding className="w-5 h-5" /> },
   { path: "/agent/settings", label: "Settings", icon: <HiCog className="w-5 h-5" /> },
 ];
