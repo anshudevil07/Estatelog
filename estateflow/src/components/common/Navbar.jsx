@@ -1,10 +1,11 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { HiMenu, HiBell, HiLogout, HiCog, HiUser, HiCheck } from "react-icons/hi";
+import { HiMenu, HiBell, HiLogout, HiCog, HiUser, HiCheck, HiTranslate } from "react-icons/hi";
 import { ImSpinner8 } from "react-icons/im";
 import { useAuth } from "../../context/AuthContext";
 import { useToast } from "../../context/ToastContext";
 import { useNotifications } from "../../context/NotificationContext";
+import { useLanguage } from "../../context/LanguageContext";
 import { NOTIF_ICONS } from "../../firebase/notificationService";
 import ThemeToggle from "./ThemeToggle";
 import Breadcrumbs from "./Breadcrumbs";
@@ -13,6 +14,7 @@ import { getInitials, formatDate } from "../../utils/formatters";
 export default function Navbar({ onMenuClick }) {
   const { user, logout } = useAuth();
   const toast = useToast();
+  const { lang, toggleLanguage } = useLanguage();
   const navigate = useNavigate();
   const { notifications, unreadCount, loading: notifLoading, readOne, readAll } = useNotifications();
 
@@ -67,6 +69,16 @@ export default function Navbar({ onMenuClick }) {
       {/* Right actions */}
       <div className="flex items-center gap-1">
         <ThemeToggle />
+
+        {/* Language toggle */}
+        <button
+          onClick={() => { toggleLanguage(); toast.info(lang === "en" ? "भाषा हिंदी में बदली" : "Language changed to English"); }}
+          className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors flex items-center gap-1"
+          title={lang === "en" ? "Switch to Hindi" : "Switch to English"}
+        >
+          <HiTranslate className="w-4 h-4" />
+          <span className="text-xs font-semibold hidden sm:inline">{lang === "en" ? "हिं" : "EN"}</span>
+        </button>
 
         {/* ── Notification Bell ── */}
         <div className="relative" ref={notifRef}>

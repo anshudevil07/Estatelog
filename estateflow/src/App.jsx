@@ -3,6 +3,7 @@ import { ThemeProvider } from "./context/ThemeContext";
 import { AuthProvider } from "./context/AuthContext";
 import { ToastProvider } from "./context/ToastContext";
 import { NotificationProvider } from "./context/NotificationContext";
+import { LanguageProvider } from "./context/LanguageContext";
 import ProtectedRoute, { RoleRoute } from "./routes/ProtectedRoute";
 
 // Layouts
@@ -31,6 +32,7 @@ import AgentReportPage from "./pages/AgentReportPage";
 import PropertyReportPage from "./pages/PropertyReportPage";
 import CommissionPage from "./pages/CommissionPage";
 import ActivityLogPage from "./pages/ActivityLogPage";
+import ExportImportPage from "./pages/ExportImportPage";
 
 // Manager pages (reuse same components — role controls what they see)
 import ManagerDashboard from "./pages/manager/ManagerDashboard";
@@ -42,6 +44,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <ThemeProvider>
+        <LanguageProvider>
         <AuthProvider>
           <ToastProvider>
             <NotificationProvider>
@@ -81,6 +84,7 @@ export default function App() {
                 <Route path="property-report" element={<PropertyReportPage />} />
                 <Route path="commissions" element={<CommissionPage />} />
                 <Route path="activity-log" element={<ActivityLogPage />} />
+                <Route path="export-import" element={<ExportImportPage />} />
                 <Route path="settings" element={<SettingsPage />} />
               </Route>
 
@@ -109,6 +113,7 @@ export default function App() {
                 <Route path="property-report" element={<PropertyReportPage />} />
                 <Route path="commissions" element={<CommissionPage />} />
                 <Route path="activity-log" element={<ActivityLogPage />} />
+                <Route path="export-import" element={<ExportImportPage />} />
                 <Route path="settings" element={<SettingsPage />} />
               </Route>
 
@@ -131,6 +136,7 @@ export default function App() {
                 <Route path="reminders" element={<RemindersPage />} />
                 <Route path="clients" element={<ClientsPage />} />
                 <Route path="visits" element={<VisitsPage />} />
+                <Route path="export-import" element={<ExportImportPage />} />
                 <Route path="settings" element={<SettingsPage />} />
               </Route>
 
@@ -140,6 +146,7 @@ export default function App() {
             </NotificationProvider>
           </ToastProvider>
         </AuthProvider>
+        </LanguageProvider>
       </ThemeProvider>
     </BrowserRouter>
   );

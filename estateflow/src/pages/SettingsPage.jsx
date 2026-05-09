@@ -1,8 +1,9 @@
 import { useState, useRef } from "react";
-import { HiUser, HiLockClosed, HiBell, HiColorSwatch, HiPhotograph, HiEye, HiEyeOff } from "react-icons/hi";
+import { HiUser, HiLockClosed, HiBell, HiColorSwatch, HiPhotograph, HiEye, HiEyeOff, HiTranslate } from "react-icons/hi";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
 import { useTheme } from "../context/ThemeContext";
+import { useLanguage } from "../context/LanguageContext";
 import Button from "../components/common/Button";
 import FormInput from "../components/common/FormInput";
 import { getInitials } from "../utils/formatters";
@@ -259,6 +260,7 @@ function NotificationsTab() {
 // ─── Appearance Tab ───────────────────────────────────────────────────────────
 function AppearanceTab() {
   const { theme, toggleTheme } = useTheme();
+  const { lang, setLanguage } = useLanguage();
   const toast = useToast();
 
   return (
@@ -266,7 +268,8 @@ function AppearanceTab() {
       <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-1">Appearance</h2>
       <p className="text-sm text-slate-500 dark:text-slate-400 mb-5">Customize how EstateFlow looks for you.</p>
 
-      <div className="space-y-5">
+      <div className="space-y-6">
+        {/* Theme */}
         <div>
           <p className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-3">Theme</p>
           <div className="grid grid-cols-2 gap-3 max-w-xs">
@@ -288,6 +291,38 @@ function AppearanceTab() {
           </div>
         </div>
 
+        {/* Language */}
+        <div className="border-t border-slate-100 dark:border-slate-700 pt-5">
+          <div className="flex items-center gap-2 mb-3">
+            <HiTranslate className="w-4 h-4 text-slate-500" />
+            <p className="text-sm font-medium text-slate-700 dark:text-slate-300">Language / भाषा</p>
+          </div>
+          <div className="grid grid-cols-2 gap-3 max-w-xs">
+            {[
+              { code: "en", label: "English", sub: "English" },
+              { code: "hi", label: "हिंदी", sub: "Hindi" },
+            ].map((l) => (
+              <button
+                key={l.code}
+                onClick={() => { setLanguage(l.code); toast.success(`Language changed to ${l.label}`); }}
+                className={`p-4 rounded-xl border-2 transition-all text-left ${
+                  lang === l.code
+                    ? "border-violet-600 bg-violet-50 dark:bg-violet-900/20"
+                    : "border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600"
+                }`}
+              >
+                <p className="text-lg font-bold text-slate-800 dark:text-white">{l.label}</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">{l.sub}</p>
+                {lang === l.code && <p className="text-xs text-violet-600 dark:text-violet-400 mt-1">Active ✓</p>}
+              </button>
+            ))}
+          </div>
+          <p className="text-xs text-slate-400 mt-3">
+            Changing language updates navigation labels and UI text throughout the app.
+          </p>
+        </div>
+
+        {/* Accent color */}
         <div className="border-t border-slate-100 dark:border-slate-700 pt-5">
           <p className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Accent Color</p>
           <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">Currently using Violet — more colors coming soon.</p>

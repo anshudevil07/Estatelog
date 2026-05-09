@@ -3,7 +3,7 @@ import { Outlet, NavLink, useNavigate } from "react-router-dom";
 import {
   HiViewGrid, HiUsers, HiOfficeBuilding,
   HiCog, HiX, HiChevronLeft, HiChevronRight,
-  HiUserCircle, HiLogout, HiViewBoards, HiBell, HiCalendar,
+  HiUserCircle, HiLogout, HiViewBoards, HiBell, HiCalendar, HiDownload,
 } from "react-icons/hi";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
@@ -17,6 +17,7 @@ const agentNav = [
   { path: "/agent/pipeline", label: "My Pipeline", icon: <HiViewBoards className="w-5 h-5" /> },
   { path: "/agent/visits", label: "Site Visits", icon: <HiCalendar className="w-5 h-5" /> },
   { path: "/agent/reminders", label: "Reminders", icon: <HiBell className="w-5 h-5" /> },
+  { path: "/agent/export-import", label: "Export / Import", icon: <HiDownload className="w-5 h-5" /> },
   { path: "/agent/properties", label: "Properties", icon: <HiOfficeBuilding className="w-5 h-5" /> },
   { path: "/agent/settings", label: "Settings", icon: <HiCog className="w-5 h-5" /> },
 ];

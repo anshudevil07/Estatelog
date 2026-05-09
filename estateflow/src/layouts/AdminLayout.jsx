@@ -4,10 +4,11 @@ import {
   HiViewGrid, HiOfficeBuilding, HiUsers, HiUserGroup,
   HiChartBar, HiCog, HiX, HiChevronLeft, HiChevronRight,
   HiShieldCheck, HiLogout, HiViewBoards, HiBell, HiCalendar, HiUserCircle,
-  HiTrendingUp, HiCurrencyRupee, HiClipboardList,
+  HiTrendingUp, HiCurrencyRupee, HiClipboardList, HiDownload,
 } from "react-icons/hi";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
+import { useLanguage } from "../context/LanguageContext";
 import { getInitials } from "../utils/formatters";
 import Navbar from "../components/common/Navbar";
 
@@ -25,6 +26,7 @@ const adminNav = [
   { path: "/admin/property-report", label: "Property Report", icon: <HiOfficeBuilding className="w-5 h-5" /> },
   { path: "/admin/commissions", label: "Commissions", icon: <HiCurrencyRupee className="w-5 h-5" /> },
   { path: "/admin/activity-log", label: "Activity Log", icon: <HiClipboardList className="w-5 h-5" /> },
+  { path: "/admin/export-import", label: "Export / Import", icon: <HiDownload className="w-5 h-5" /> },
   { path: "/admin/settings", label: "Settings", icon: <HiCog className="w-5 h-5" /> },
 ];
 
@@ -34,6 +36,7 @@ export default function AdminLayout() {
   const { user, logout } = useAuth();
   const toast = useToast();
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   async function handleLogout() {
     await logout();
