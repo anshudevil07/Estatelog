@@ -16,6 +16,7 @@ export default {
   commissions: "Commissions",
   activityLog: "Activity Log",
   exportImport: "Export / Import",
+  propertyReport: "Property Report",
 
   // Common
   add: "Add",

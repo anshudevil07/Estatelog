@@ -16,6 +16,7 @@ export default {
   commissions: "कमीशन",
   activityLog: "गतिविधि लॉग",
   exportImport: "निर्यात / आयात",
+  propertyReport: "संपत्ति रिपोर्ट",
 
   // Common
   add: "जोड़ें",

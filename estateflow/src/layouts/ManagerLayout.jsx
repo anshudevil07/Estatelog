@@ -8,23 +8,24 @@ import {
 } from "react-icons/hi";
 import { useAuth } from "../context/AuthContext";
 import { useToast } from "../context/ToastContext";
+import { useLanguage } from "../context/LanguageContext";
 import { getInitials } from "../utils/formatters";
 import Navbar from "../components/common/Navbar";
 
 const managerNav = [
-  { path: "/manager/dashboard", label: "Dashboard", icon: <HiViewGrid className="w-5 h-5" /> },
-  { path: "/manager/properties", label: "Properties", icon: <HiOfficeBuilding className="w-5 h-5" /> },
-  { path: "/manager/leads", label: "Leads", icon: <HiUsers className="w-5 h-5" /> },
-  { path: "/manager/clients", label: "Clients", icon: <HiUserCircle className="w-5 h-5" /> },
-  { path: "/manager/pipeline", label: "Pipeline", icon: <HiViewBoards className="w-5 h-5" /> },
-  { path: "/manager/visits", label: "Site Visits", icon: <HiCalendar className="w-5 h-5" /> },
-  { path: "/manager/reminders", label: "Reminders", icon: <HiBell className="w-5 h-5" /> },
-  { path: "/manager/agents", label: "Agents", icon: <HiUserGroup className="w-5 h-5" /> },
-  { path: "/manager/analytics", label: "Analytics", icon: <HiChartBar className="w-5 h-5" /> },
-  { path: "/manager/property-report", label: "Property Report", icon: <HiOfficeBuilding className="w-5 h-5" /> },
-  { path: "/manager/activity-log", label: "Activity Log", icon: <HiClipboardList className="w-5 h-5" /> },
-  { path: "/manager/export-import", label: "Export / Import", icon: <HiDownload className="w-5 h-5" /> },
-  { path: "/manager/settings", label: "Settings", icon: <HiCog className="w-5 h-5" /> },
+  { path: "/manager/dashboard",       label: "Dashboard",       tKey: "dashboard",      icon: <HiViewGrid className="w-5 h-5" /> },
+  { path: "/manager/properties",      label: "Properties",      tKey: "properties",     icon: <HiOfficeBuilding className="w-5 h-5" /> },
+  { path: "/manager/leads",           label: "Leads",           tKey: "leads",          icon: <HiUsers className="w-5 h-5" /> },
+  { path: "/manager/clients",         label: "Clients",         tKey: "clients",        icon: <HiUserCircle className="w-5 h-5" /> },
+  { path: "/manager/pipeline",        label: "Pipeline",        tKey: "pipeline",       icon: <HiViewBoards className="w-5 h-5" /> },
+  { path: "/manager/visits",          label: "Site Visits",     tKey: "visits",         icon: <HiCalendar className="w-5 h-5" /> },
+  { path: "/manager/reminders",       label: "Reminders",       tKey: "reminders",      icon: <HiBell className="w-5 h-5" /> },
+  { path: "/manager/agents",          label: "Agents",          tKey: "agents",         icon: <HiUserGroup className="w-5 h-5" /> },
+  { path: "/manager/analytics",       label: "Analytics",       tKey: "analytics",      icon: <HiChartBar className="w-5 h-5" /> },
+  { path: "/manager/property-report", label: "Property Report", tKey: "propertyReport", icon: <HiOfficeBuilding className="w-5 h-5" /> },
+  { path: "/manager/activity-log",    label: "Activity Log",    tKey: "activityLog",    icon: <HiClipboardList className="w-5 h-5" /> },
+  { path: "/manager/export-import",   label: "Export / Import", tKey: "exportImport",   icon: <HiDownload className="w-5 h-5" /> },
+  { path: "/manager/settings",        label: "Settings",        tKey: "settings",       icon: <HiCog className="w-5 h-5" /> },
 ];
 
 export default function ManagerLayout() {
@@ -33,6 +34,7 @@ export default function ManagerLayout() {
   const { user, logout } = useAuth();
   const toast = useToast();
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   async function handleLogout() {
     await logout();
@@ -72,7 +74,7 @@ export default function ManagerLayout() {
                 <NavLink to={item.path} onClick={() => setMobileOpen(false)} title={collapsed ? item.label : undefined}
                   className={({ isActive }) => `flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${isActive ? "bg-violet-600 text-white" : "text-slate-400 hover:bg-slate-800 hover:text-white"} ${collapsed ? "justify-center" : ""}`}>
                   <span className="shrink-0">{item.icon}</span>
-                  {!collapsed && <span>{item.label}</span>}
+                  {!collapsed && <span>{t(item.tKey) || item.label}</span>}
                 </NavLink>
               </li>
             ))}
