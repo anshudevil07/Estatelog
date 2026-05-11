@@ -209,9 +209,9 @@ export default function ClientProfilePage() {
             </div>
           </div>
 
-          {/* Details */}
+          {/* ── Contact & Basic Details ── */}
           <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-5 space-y-3">
-            <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Details</h3>
+            <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Contact & Details</h3>
             {[
               { icon: <HiMail className="w-4 h-4" />, label: "Email", value: client.email },
               { icon: <HiPhone className="w-4 h-4" />, label: "Phone", value: client.phone },
@@ -235,6 +235,71 @@ export default function ClientProfilePage() {
               </div>
             )}
           </div>
+
+          {/* ── Applicant Details ── */}
+          {(client.dob || client.panNumber || client.aadharNumber || client.flatNo || client.address) && (
+            <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-5 space-y-3">
+              <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3 flex items-center gap-2">
+                <span className="w-5 h-5 rounded-full bg-violet-100 dark:bg-violet-900/30 flex items-center justify-center text-xs">👤</span>
+                Applicant Details
+              </h3>
+              {[
+                { label: "Date of Birth", value: client.dob },
+                { label: "Flat / Unit No.", value: client.flatNo },
+                { label: "PAN Number", value: client.panNumber },
+                { label: "Aadhaar Number", value: client.aadharNumber },
+                { label: "Address", value: client.address },
+              ].filter(i => i.value).map(item => (
+                <div key={item.label}>
+                  <p className="text-xs text-slate-400">{item.label}</p>
+                  <p className="text-sm font-medium text-slate-700 dark:text-slate-300 break-words mt-0.5">
+                    {item.label === "PAN Number" ? (
+                      <span className="font-mono tracking-wider">{item.value}</span>
+                    ) : item.label === "Aadhaar Number" ? (
+                      <span className="font-mono tracking-wider">
+                        {/* Mask middle digits for privacy */}
+                        {item.value.replace(/(\d{4})\s?(\d{4})\s?(\d{4})/, "XXXX XXXX $3")}
+                      </span>
+                    ) : item.value}
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* ── Co-Applicant Details ── */}
+          {client.coApplicantName && (
+            <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-5 space-y-3">
+              <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3 flex items-center gap-2">
+                <span className="w-5 h-5 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-xs">👥</span>
+                Co-Applicant
+                {client.coApplicantRelation && (
+                  <span className="text-xs font-normal text-slate-400">({client.coApplicantRelation})</span>
+                )}
+              </h3>
+              {[
+                { label: "Name", value: client.coApplicantName },
+                { label: "Phone", value: client.coApplicantPhone },
+                { label: "Email", value: client.coApplicantEmail },
+                { label: "Date of Birth", value: client.coApplicantDob },
+                { label: "PAN Number", value: client.coApplicantPan },
+                { label: "Aadhaar Number", value: client.coApplicantAadhar },
+              ].filter(i => i.value).map(item => (
+                <div key={item.label}>
+                  <p className="text-xs text-slate-400">{item.label}</p>
+                  <p className="text-sm font-medium text-slate-700 dark:text-slate-300 mt-0.5">
+                    {item.label.includes("PAN") ? (
+                      <span className="font-mono tracking-wider">{item.value}</span>
+                    ) : item.label.includes("Aadhaar") ? (
+                      <span className="font-mono tracking-wider">
+                        {item.value.replace(/(\d{4})\s?(\d{4})\s?(\d{4})/, "XXXX XXXX $3")}
+                      </span>
+                    ) : item.value}
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
 
           {/* Site visits summary */}
           <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-5">
