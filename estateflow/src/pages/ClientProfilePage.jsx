@@ -301,6 +301,33 @@ export default function ClientProfilePage() {
             </div>
           )}
 
+          {/* ── Cost Sheet Summary ── */}
+          {client.costGrandTotal > 0 && (
+            <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+              <div className="px-5 py-3 border-b border-slate-100 dark:border-slate-700 bg-violet-50 dark:bg-violet-900/20">
+                <h3 className="text-sm font-semibold text-violet-700 dark:text-violet-300">💰 Cost Sheet Summary</h3>
+              </div>
+              <div className="divide-y divide-slate-100 dark:divide-slate-700">
+                {[
+                  { label: "Area", value: client.area ? `${Number(client.area).toLocaleString("en-IN")} sq.ft.` : null },
+                  { label: "Rate / sq.ft.", value: client.ratePerSqft ? `₹${Number(client.ratePerSqft).toLocaleString("en-IN")}` : null },
+                  { label: "Base Value", value: client.costBaseValue ? `₹${Number(client.costBaseValue).toLocaleString("en-IN")}` : null },
+                  { label: "Additional Charges", value: client.costChargesTotal ? `₹${Number(client.costChargesTotal).toLocaleString("en-IN")}` : null },
+                  { label: `GST (${client.gstRate || 5}%)`, value: client.costGstAmount ? `₹${Number(client.costGstAmount).toLocaleString("en-IN")}` : null },
+                ].filter(r => r.value).map(row => (
+                  <div key={row.label} className="flex justify-between px-5 py-2.5">
+                    <span className="text-xs text-slate-500 dark:text-slate-400">{row.label}</span>
+                    <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">{row.value}</span>
+                  </div>
+                ))}
+                <div className="flex justify-between px-5 py-3 bg-violet-600">
+                  <span className="text-sm font-bold text-white">Grand Total</span>
+                  <span className="text-base font-black text-white">₹{Number(client.costGrandTotal).toLocaleString("en-IN")}</span>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Site visits summary */}
           <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-5">
             <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3 flex items-center gap-2">
